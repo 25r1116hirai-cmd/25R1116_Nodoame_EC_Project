@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>記事の更新</h1>
+
+<form method="POST">
+
+<label for="departmentid">部門ID</label> 
+<input type="number" value="{{dpt.id}}" ><br>
+
+<label for="departmentName">部門名</label> 
+<input type="text" name="departmentName" value="{{ dpt.name }}" id="departmentName">
+<br>
+<select name="departmentflag">
+    <option value="False">有効</option>
+    <option value="True">削除</option>
+</select>
+<input type="submit" value="更新">
+
+</form>
+
+{% endblock %}

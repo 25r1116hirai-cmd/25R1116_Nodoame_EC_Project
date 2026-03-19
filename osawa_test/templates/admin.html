@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="/create" role="button">新規登録</a>
+
+{% for post in posts %}
+<article>
+    {% if post.img_name %}
+        <img src="{{ url_for('static', filename='img/' + post.img_name) }}" width="200" height="250">
+    {% else %}
+        <p>画像なし</p>
+    {% endif %}
+
+    <a href="/{{ post.id }}/delete" role="button">削除</a>
+    <a href="/{{ post.id }}/update" role="button">更新</a>
+
+    <p>{{ post.id }}</p>
+    <p>{{ post.name }}</p>
+</article>
+{% endfor %}
+
+{% endblock %}
