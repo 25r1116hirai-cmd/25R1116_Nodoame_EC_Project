@@ -1,23 +1,57 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<a href="/create" role="button">新規登録</a>
+<h1>管理者画面</h1>
+<a href="/create" class="btn">新規登録</a>
 
-{% for post in posts %}
-<article>
-    {% if post.img_name %}
-        <img src="{{ url_for('static', filename='img/' + post.img_name) }}" width="200" height="250">
-    {% else %}
-        <p>画像なし</p>
-    {% endif %}
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>名前</th>
+            <th>メール</th>
+            <th>役割</th>
+            <th>操作</th>
+        </tr>
+    </thead>
 
-    <a href="/{{ post.id }}/delete" role="button">削除</a>
-    <a href="/{{ post.id }}/update" role="button">更新</a>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.mail }}</td>
+            <td>{{ user.role }}</td>
 
-    <p>{{ post.id }}</p>
-    <p>{{ post.name }}</p>
-</article>
-{% endfor %}
+            <td>
+                
+                <a href="{{url_for('update',user_id=user.id)}}" class="btn">編集</a>
+                <a href="{{url_for('delete',user_id=user.id)}}" class="btn  btn-danger">削除</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<style>
+.btn {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-right: 5px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.btn:hover {
+    background-color: #2980b9;
+}
+.btn-danger {
+    background-color: #e74c3c;
+}
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+</style>
 
 {% endblock %}

@@ -1,21 +1,30 @@
 {% extends "base.html" %}
-
 {% block content %}
 
 <h1>新規登録</h1>
-<form method="POST" enctype="multipart/form-data">
-    <label for="departmentid">部門ID</label> 
-    <input type="number" name="departmentid" id="departmentid"><br>
+<form method="POST">
+    <!-- name="name" の""の中身がapp.pyに渡される。-->
+    <label for="name">名前</label>
+    <input type="text" name="name" id="name" >
 
-    <label for="departmentName">部門名</label> 
-    <input type="text" name="departmentName" id="departmentName"><br>
+    <label for="mail">メールアドレス</label>
+    <input type="email" name="email" id="mail">
 
-    <label for="fileUpload">画像</label> 
-    <input type="file" name="img" id="fileUpload"><br>
+    <label for="pass">パスワード</label>
+    <input type="password" name="password" id="pass">
+
+    <label for="role">ロール</label>
+    <select name="role" id="role">
+        <option value="">--選択してください--</option>
+        <option value="user">ユーザ</option>
+        <option value="admin">管理者</option>
+    </select>
+
 
     <input type="submit" name="新規登録" value="登録">
+
+
 </form>
-<p>{{method}}</p>
-{{id}}
-{{name}}
+
+
 {% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+<div class="card">
+<h2>{{ users.name }} の今日の勤怠</h2>
+
+<div class="button-area">
+
+<form method="POST" action="/clock_in">
+<button class="btn clockin" type="submit">出勤</button>
+</form>
+
+<form method="POST" action="/break_start">
+<button class="btn breakstart" type="submit">休憩開始</button>
+</form>
+
+<form method="POST" action="/break_end">
+<button class="btn breakend" type="submit">休憩終了</button>
+</form>
+
+<form method="POST" action="/clock_out">
+<button class="btn clockout" type="submit">退勤</button>
+</form>
+
+</div>
+</div>
+
+
+<div class="card">
+
+<h2>今日の勤務</h2>
+
+<table class="table">
+
+<tr>
+<th>出勤</th>
+<th>退勤</th>
+</tr>
+
+{% if latest %}
+<tr>
+<td>{{ latest.clock_in_datetime.strftime('%Y/%m/%d %H:%M') }}</td>
+
+<td>
+{% if latest.clock_out_datetime %}
+{{ latest.clock_out_datetime.strftime('%Y/%m/%d %H:%M') }}
+{% else %}
+---
+{% endif %}
+</td>
+
+</tr>
+{% else %}
+<tr>
+<td colspan="2">勤怠データなし</td>
+</tr>
+{% endif %}
+
+</table>
+
+</div>
+
+
+<div class="card">
+
+<h2>今日の休憩履歴</h2>
+
+<table class="table">
+
+<tr>
+<th>No</th>
+<th>休憩開始</th>
+<th>休憩終了</th>
+</tr>
+
+{% if latest %}
+{% for rest in latest.rests %}
+<tr>
+
+<td>{{ loop.index }}</td>
+
+<td>
+{% if rest.break_start_time %}
+{{ rest.break_start_time.strftime('%Y/%m/%d %H:%M') }}
+{% else %}
+---
+{% endif %}
+</td>
+
+<td>
+{% if rest.break_end_time %}
+{{ rest.break_end_time.strftime('%Y/%m/%d %H:%M') }}
+{% else %}
+---
+{% endif %}
+</td>
+
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+<td colspan="3">休憩履歴なし</td>
+</tr>
+{% endif %}
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

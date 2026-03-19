@@ -1,23 +1,34 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<h1>記事の更新</h1>
+<h1>従業員情報の更新</h1>
 
 <form method="POST">
 
-<label for="departmentid">部門ID</label> 
-<input type="number" value="{{dpt.id}}" ><br>
-
-<label for="departmentName">部門名</label> 
-<input type="text" name="departmentName" value="{{ dpt.name }}" id="departmentName">
+<label>ID</label>
+<input type="number" value="{{ user.id }}" readonly>
 <br>
-<select name="departmentflag">
-    <option value="False">有効</option>
-    <option value="True">削除</option>
+
+<label for="name">名前</label>
+<input type="text" name="name" id="name" value="{{ user.name }}">
+<br>
+
+<label for="email">メールアドレス</label>
+<input type="text" name="email" id="email" value="{{ user.mail }}">
+<br>
+
+<label for="password">パスワード</label>
+<input type="password" name="password" id="password">
+<br>
+
+<label for="role">権限</label>
+<select name="role" id="role">
+    <option value="user" {% if user.role == "user" %}selected{% endif %}>user</option>
+    <option value="admin" {% if user.role == "admin" %}selected{% endif %}>admin</option>
 </select>
+<br><br>
+
 <input type="submit" value="更新">
 
 </form>
-
 {% endblock %}
