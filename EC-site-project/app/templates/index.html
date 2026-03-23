@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}従業員一覧{% endblock %}
+
+{% block content %}
+<h2>従業員一覧</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <th>ID</th><th>名前</th><th>操作</th>
+    </tr>
+    {% for d in data %}
+        {% set getdata = d.getData() %}
+        <tr>
+            <td>{{getdata.id}}</td>
+            <td>{{getdata.name}}</td>
+            <td>
+                <a href="{{ url_for('employee_detail', id=getdata.id) }}">詳細</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<br>
+<a href="{{ url_for('employee') }}">従業員登録</a>
+<br><br>
+<a href="{{ url_for('departments') }}">部署一覧へ</a>
+{% endblock %}
