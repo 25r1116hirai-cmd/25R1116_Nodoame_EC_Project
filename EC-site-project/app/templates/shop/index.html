@@ -1,4 +1,4 @@
-{# 商品管理画面 #}
+{# 商品一覧画面 #}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -22,7 +22,6 @@
             line-height: 1.6;
         }
 
-        /* ヘッダーエリア */
         header {
             background: var(--white);
             padding: 10px 5%;
@@ -57,7 +56,6 @@
         .nav-item.active { border: 2px solid #000; font-weight: bold; }
         .nav-item:hover { background: #f9fafb; }
 
-        /* メインレイアウト */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -66,7 +64,6 @@
             padding: 30px 20px;
         }
 
-        /* サイドバー */
         aside { width: 220px; flex-shrink: 0; }
         .sidebar-group { margin-bottom: 25px; }
         .sidebar-title { font-size: 0.85rem; font-weight: bold; color: #6b7280; margin-bottom: 10px; }
@@ -80,21 +77,16 @@
             transition: 0.2s;
         }
         .filter-item.active { background: var(--accent-green); color: white; }
-        .filter-item:hover:not(.active) { background: #e5e7eb; }
 
-        /* 商品グリッド */
         main { flex-grow: 1; }
         .section-header { margin-bottom: 20px; }
-        .section-header h2 { font-size: 1.25rem; margin: 0; }
-        .item-count { font-size: 0.8rem; color: #9ca3af; font-weight: normal; }
-
+        
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 20px;
         }
 
-        /* 商品カード */
         .product-card {
             background: var(--white);
             border-radius: 12px;
@@ -105,6 +97,7 @@
         }
         .product-card:hover { transform: translateY(-4px); }
 
+        /* 画像コンテナのスタイル */
         .img-container { width: 100%; height: 180px; background: #eee; }
         .img-container img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -121,14 +114,8 @@
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
-        .btn-add:hover { opacity: 0.9; }
 
-        /* 管理者用バッジ (デモ用) */
         .admin-edit-tag {
             position: absolute;
             top: 10px;
@@ -138,6 +125,7 @@
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 0.7rem;
+            z-index: 10;
         }
     </style>
 </head>
@@ -174,46 +162,34 @@
 
     <main>
         <div class="section-header">
-            <h2>すべての商品 <span class="item-count">{{ products|length }} 点の商品</span></h2>
+            <h2>すべての商品 <span style="font-size: 0.8rem; color: #9ca3af;">{{ products|length }} 点の商品</span></h2>
         </div>
 
         <div class="product-grid">
-            {% for p in products %}
-            <div class="product-card">
-                {% if isAdmin %}
-                <div class="admin-edit-tag">在庫: {{ p.stock }}</div>
-                {% endif %}
-                
-                <div class="img-container">
-                    <img src="{{ p.image }}" alt="{{ p.name }}">
+            {% if products %}
+                {% for p in products %}
+                <div class="product-card">
+                    {% if isAdmin %}
+                    <div class="admin-edit-tag">在庫: {{ p.stock }}</div>
+                    {% endif %}
+                    
+                    <div class="img-container">
+                        <a href="{{ url_for('shop.detail', id=p.id) }}">
+                            <img src="{{ p.image }}" alt="{{ p.name }}">
+                        </a>
+                    </div>
+                    
+                    <div class="card-content">
+                        <h3 class="p-name">{{ p.name }}</h3>
+                        <p class="p-price">¥{{ "{:,}".format(p.price) }}</p>
+                        <button class="btn-add">🛒 カートへ</button>
+                    </div>
                 </div>
-                
-                <div class="card-content">
-                    <h3 class="p-name">{{ p.name }}</h3>
-                    <p class="p-price">¥{{ "{:,}".format(p.price) }}</p>
-                    <button class="btn-add">🛒 カートへ</button>
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p>表示する商品がありません。</p>
+            {% endif %}
         </div>
-        <div class="product-grid">
-    {% if products %}
-        {% for p in products %}
-        <div class="product-card">
-            <div class="img-container" style="width:100%; height:180px; background:#eee;">
-                <img src="{{ p.image }}" alt="{{ p.name }}" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-            <div class="card-content" style="padding:15px;">
-                <h3 style="font-size:1rem; margin:0;">{{ p.name }}</h3>
-                <p style="color:#10b981; font-weight:bold;">¥{{ "{:,}".format(p.price) }}</p>
-                <button style="width:100%; padding:10px; background:#10b981; color:white; border:none; border-radius:8px;">🛒 カートへ</button>
-            </div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p>表示する商品がありません。 (products変数が空、または正しく渡されていません)</p>
-    {% endif %}
-</div>
     </main>
 </div>
 
