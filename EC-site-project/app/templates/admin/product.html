@@ -14,7 +14,7 @@
         </nav>
     </header>
 <h1>商品管理画面</h1>
-
+<!-- 
 <table>
     <tr>
         <th>ID</th>
@@ -35,22 +35,56 @@
         <td>{{ product.description }}</td>
         <td>{{ product.tax_rate }}%</td>
 
-        <!-- 在庫 -->
-        <td>
-            {% if product.stock == 0 %}
-                <span style="color:red;">在庫切れ</span>
-            {% else %}
-                {{ product.stock }}
-            {% endif %}
-        </td>
-
     
     </tr>
     {% endif %}
     {% endfor %}
-</table>    
+</table>     -->
 
+<form method="POST" enctype="multipart/form-data" novalidate>
+  {{ form.hidden_tag() }}
 
+  <div>
+    {{ form.itemName.label }}<br>
+    {{ form.itemName() }}
+  </div>
+
+  <div>
+    {{ form.categoryName.label }}<br>
+    {{ form.categoryName() }}
+  </div>
+
+  <div>
+    {{ form.itemDetail.label }}<br>
+    {{ form.itemDetail() }}
+  </div>
+
+  <div>
+    {{ form.price.label }}<br>
+    {{ form.price() }}
+  </div>
+
+  <div>
+    {{ form.taxRate.label }}<br>
+    {{ form.taxRate() }}
+  </div>
+
+  <div>
+    {{ form.stock.label }}<br>
+    {{ form.stock() }}
+  </div>
+
+  <div>
+    {{ form.recmdFlg() }} {{ form.recmdFlg.label }}
+  </div>
+
+  <div>
+    {{ form.imageFile.label }}<br>
+    {{ form.imageFile() }}
+  </div>
+
+  <button type="submit">登録</button>
+</form>
 
 
 <style>

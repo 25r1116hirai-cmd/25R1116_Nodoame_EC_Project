@@ -1,7 +1,7 @@
-# SQLAlchemyのオブジェクト（DB操作ツール）を作成する。
-# ここでの db = SQLAlchemy()　はSQL alchemyをインスタンス化した変数
+# SQLAlchemyのインスタンス（DB操作用）を作成
+# このdbはアプリ全体で共有される共通のDBオブジェクト
+# 各モデルファイルで import して同じDBを使うために定義しています。
 
 
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()

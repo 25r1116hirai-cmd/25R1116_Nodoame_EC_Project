@@ -1,4 +1,10 @@
-from flask import Blueprint, redirect, render_template, url_for
+import os
+from flask import Blueprint, current_app, redirect, render_template, request, url_for
+from routes.form import ItemForm
+import uuid
+#DBのテーブルとDB操作のファイルをインポート
+from app.model.itemM import ItemM
+from app.extensions import db
 
 
 admin = Blueprint("admin",__name__)
@@ -120,7 +126,50 @@ def toggle_status(order_id):
             break
     return redirect(url_for("admin.order"))
 
+
+
 # 商品管理画面(product.htmlへ遷移)
-@admin.route("/product")
+@admin.route("/product", methods=["GET", "POST"])
 def product():
-    return render_template("admin/product.html",products=products)
+    form = ItemForm()
+
+    if request.method == "POST":
+        itemName = form.itemName.data
+        categoryName = form.categoryName.data
+        itemDetail = form.itemDetail.data
+        price = form.price.data
+        taxRate = form.taxRate.data
+        stock = form.stock.data
+        recmdFlg = form.recmdFlg.data
+
+        #1. 画像の取得
+        file = form.imageFile.data
+        # 画像がある場合
+        if file:
+            #2. 画像ファイル名の取得
+            filename = file.filename
+            #3. static/img/配下にアップロードされたファイル名を追加。
+            # DBにパスのみ img直下に画像が入ります。
+            save_path = os.path.join(current_app.static_folder, 'img', filename)
+            #4. 画像のパス保存する
+            file.save(save_path)
+        else:
+            filename = None
+
+        # itemId はここで生成（例: 自動採番や規則に合わせて）
+        item = ItemM(
+            itemName=itemName,
+            categoryName=categoryName,
+            itemDetail=itemDetail,
+            price=price,
+            taxRate=taxRate,
+            stock=stock,
+            recmdFlg=recmdFlg,
+            imageName=filename
+        )
+
+        db.session.add(item)
+        db.session.commit()
+        return redirect("/admin/product")
+
+    return render_template("admin/product.html", form=form)

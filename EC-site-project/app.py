@@ -9,7 +9,11 @@ from app.model import *
 
 app = Flask(__name__, template_folder="app/templates")
 
+# CSRF保護のためにシークレットキーを作成
+app.config['SECRET_KEY'] = 'abc'
+# 使用するDBを設定
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DB.db'
+# dbにFlaskアプリを紐付
 db.init_app(app)
 
 
