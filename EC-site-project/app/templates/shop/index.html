@@ -1,6 +1,8 @@
-{# 商品管理画面 #}
+{# 商品一覧画面 #}
+{# 商品一覧画面 #}
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +24,6 @@
             line-height: 1.6;
         }
 
-        /* ヘッダーエリア */
         header {
             background: var(--white);
             padding: 10px 5%;
@@ -35,7 +36,14 @@
             z-index: 100;
         }
 
-        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2rem; }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
         .search-bar input {
             padding: 8px 20px;
             width: 350px;
@@ -44,7 +52,11 @@
             background: #f9fafb;
         }
 
-        .nav-links { display: flex; gap: 12px; }
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
         .nav-item {
             text-decoration: none;
             color: var(--text-main);
@@ -54,10 +66,16 @@
             font-size: 0.9rem;
             transition: 0.2s;
         }
-        .nav-item.active { border: 2px solid #000; font-weight: bold; }
-        .nav-item:hover { background: #f9fafb; }
 
-        /* メインレイアウト */
+        .nav-item.active {
+            border: 2px solid #000;
+            font-weight: bold;
+        }
+
+        .nav-item:hover {
+            background: #f9fafb;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -66,27 +84,55 @@
             padding: 30px 20px;
         }
 
-        /* サイドバー */
-        aside { width: 220px; flex-shrink: 0; }
-        .sidebar-group { margin-bottom: 25px; }
-        .sidebar-title { font-size: 0.85rem; font-weight: bold; color: #6b7280; margin-bottom: 10px; }
-        .filter-item {
-            background: var(--white);
-            padding: 10px 15px;
-            margin-bottom: 4px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.2s;
+        aside {
+            width: 220px;
+            flex-shrink: 0;
         }
-        .filter-item.active { background: var(--accent-green); color: white; }
-        .filter-item:hover:not(.active) { background: #e5e7eb; }
 
-        /* 商品グリッド */
-        main { flex-grow: 1; }
-        .section-header { margin-bottom: 20px; }
-        .section-header h2 { font-size: 1.25rem; margin: 0; }
-        .item-count { font-size: 0.8rem; color: #9ca3af; font-weight: normal; }
+        .sidebar-group {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        /* リンクのデザインをボタン風に固定 */
+        .filter-item {
+            display: block;
+            text-decoration: none;
+            background: var(--white);
+            color: var(--text-main);
+            padding: 10px 15px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .filter-item:hover {
+            background: #e5e7eb;
+            transform: translateX(3px);
+        }
+
+        /* 選択中のスタイル（今は手動ですが、後ほど自動化も可能です） */
+        .filter-item.active {
+            background: var(--accent-green);
+            color: white;
+            font-weight: bold;
+        }
+
+        main {
+            flex-grow: 1;
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+        }
 
         .product-grid {
             display: grid;
@@ -94,7 +140,6 @@
             gap: 20px;
         }
 
-        /* 商品カード */
         .product-card {
             background: var(--white);
             border-radius: 12px;
@@ -103,15 +148,40 @@
             transition: transform 0.2s;
             position: relative;
         }
-        .product-card:hover { transform: translateY(-4px); }
 
-        .img-container { width: 100%; height: 180px; background: #eee; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
 
-        .card-content { padding: 15px; }
-        .p-name { font-weight: bold; font-size: 1rem; margin: 0 0 8px 0; }
-        .p-price { color: var(--accent-green); font-size: 1.2rem; font-weight: bold; margin-bottom: 12px; }
-        
+        .img-container {
+            width: 100%;
+            height: 180px;
+            background: #eee;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .p-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 0 0 8px 0;
+        }
+
+        .p-price {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
         .btn-add {
             width: 100%;
             padding: 10px;
@@ -121,101 +191,79 @@
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            transition: opacity 0.2s;
         }
-        .btn-add:hover { opacity: 0.9; }
 
-        /* 管理者用バッジ (デモ用) */
-        .admin-edit-tag {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
+        .btn-add:hover {
+            opacity: 0.8;
         }
+
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-area">🏠 Simple EC Store</div>
-    <div class="search-bar"><input type="text" placeholder="キーワードで探す"></div>
-    <div class="nav-links">
-        <a href="#" class="nav-item active">商品一覧</a>
-        <a href="#" class="nav-item">注文状況</a>
-        <a href="#" class="nav-item">カート</a>
-    </div>
-</header>
-
-<div class="container">
-    <aside>
-        <div class="sidebar-group">
-            <div class="sidebar-title">カテゴリー</div>
-            <div class="filter-item active">すべて表示</div>
-            <div class="filter-item">コーヒー</div>
-            <div class="filter-item">紅茶</div>
-            <div class="filter-item">食器</div>
+    <header>
+        <div class="logo-area">🏠 Simple EC Store</div>
+        <div class="search-bar"><input type="text" placeholder="キーワードで探す"></div>
+        <div class="nav-links">
+            <a href="{{ url_for('shop.index') }}" class="nav-item active">商品一覧</a>
+            <a href="#" class="nav-item">注文状況</a>
+            <a href="#" class="nav-item">カート</a>
         </div>
+    </header>
 
-        <div class="sidebar-group">
-            <div class="sidebar-title">価格帯</div>
-            <div class="filter-item">すべて</div>
-            <div class="filter-item">〜 ¥1,000</div>
-            <div class="filter-item">¥1,001 〜 ¥3,000</div>
-            <div class="filter-item">¥3,001 〜</div>
-        </div>
-    </aside>
+    <div class="container">
+        <aside>
+            <div class="sidebar-group">
+                <div class="sidebar-title">カテゴリー</div>
+                <a href="{{ url_for('shop.index', category='all') }}" class="filter-item">すべて表示</a>
+                <a href="{{ url_for('shop.index', category='coffee') }}" class="filter-item">コーヒー</a>
+                <a href="{{ url_for('shop.index', category='tea') }}" class="filter-item">紅茶</a>
+                <a href="{{ url_for('shop.index', category='tableware') }}" class="filter-item">食器</a>
+            </div>
 
-    <main>
-        <div class="section-header">
-            <h2>すべての商品 <span class="item-count">{{ products|length }} 点の商品</span></h2>
-        </div>
+            <div class="sidebar-group">
+                <div class="sidebar-title">価格帯</div>
+                <a href="{{ url_for('shop.index') }}" class="filter-item">すべて</a>
+                <a href="{{ url_for('shop.index', price='1000') }}" class="filter-item">〜 ¥1,000</a>
+                <a href="{{ url_for('shop.index', price='3000') }}" class="filter-item">¥1,001 〜 ¥3,000</a>
+                <a href="{{ url_for('shop.index', price='3001') }}" class="filter-item">¥3,001 〜</a>
+            </div>
+        </aside>
 
-        <div class="product-grid">
-            {% for p in products %}
-            <div class="product-card">
-                {% if isAdmin %}
-                <div class="admin-edit-tag">在庫: {{ p.stock }}</div>
+        <main>
+            <div class="section-header">
+                <h2>すべての商品 <span style="font-size: 0.8rem; color: #9ca3af;">{{ products|length }} 点の商品</span></h2>
+            </div>
+
+            <div class="product-grid">
+                {% if products %}
+                    {% for p in products %}
+                    <div class="product-card">
+                        <div class="img-container">
+                            <a href="{{ url_for('shop.detail', id=p.id) }}">
+                                <img src="{{ p.image }}" alt="{{ p.name }}">
+                            </a>
+                        </div>
+
+                        <div class="card-content">
+                            <h3 class="p-name">{{ p.name }}</h3>
+                            <p class="p-price">¥{{ "{:,}".format(p.price) }}</p>
+                            <button class="btn-add">🛒 カートへ</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="padding: 40px; text-align: center; color: #6b7280; background: white; border-radius: 12px;">
+                        <p>該当する商品がありません。</p>
+                        <a href="{{ url_for('shop.index') }}" style="color: var(--accent-green);">すべての商品を表示する</a>
+                    </div>
                 {% endif %}
-                
-                <div class="img-container">
-                    <img src="{{ p.image }}" alt="{{ p.name }}">
-                </div>
-                
-                <div class="card-content">
-                    <h3 class="p-name">{{ p.name }}</h3>
-                    <p class="p-price">¥{{ "{:,}".format(p.price) }}</p>
-                    <button class="btn-add">🛒 カートへ</button>
-                </div>
             </div>
-            {% endfor %}
-        </div>
-        <div class="product-grid">
-    {% if products %}
-        {% for p in products %}
-        <div class="product-card">
-            <div class="img-container" style="width:100%; height:180px; background:#eee;">
-                <img src="{{ p.image }}" alt="{{ p.name }}" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-            <div class="card-content" style="padding:15px;">
-                <h3 style="font-size:1rem; margin:0;">{{ p.name }}</h3>
-                <p style="color:#10b981; font-weight:bold;">¥{{ "{:,}".format(p.price) }}</p>
-                <button style="width:100%; padding:10px; background:#10b981; color:white; border:none; border-radius:8px;">🛒 カートへ</button>
-            </div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p>表示する商品がありません。 (products変数が空、または正しく渡されていません)</p>
-    {% endif %}
-</div>
-    </main>
-</div>
+        </main>
+    </div>
 
 </body>
+
 </html>
