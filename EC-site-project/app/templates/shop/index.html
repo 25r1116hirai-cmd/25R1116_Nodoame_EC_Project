@@ -1,12 +1,61 @@
 {# 商品一覧画面 #}
-<!DOCTYPE html>
-<html lang="ja">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple EC Store - 商品一覧</title>
-    <style>
+{% extends "base.html" %}
+
+{%block content%}
+
+    <div class="container">
+        <aside>
+            <div class="sidebar-group">
+                <div class="sidebar-title">カテゴリー</div>
+                <a href="{{ url_for('shop.index', category='all') }}" class="filter-item">すべて表示</a>
+                <a href="{{ url_for('shop.index', category='coffee') }}" class="filter-item">コーヒー</a>
+                <a href="{{ url_for('shop.index', category='tea') }}" class="filter-item">紅茶</a>
+                <a href="{{ url_for('shop.index', category='tableware') }}" class="filter-item">食器</a>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">価格帯</div>
+                <a href="{{ url_for('shop.index') }}" class="filter-item">すべて</a>
+                <a href="{{ url_for('shop.index', price='1000') }}" class="filter-item">〜 ¥1,000</a>
+                <a href="{{ url_for('shop.index', price='3000') }}" class="filter-item">¥1,001 〜 ¥3,000</a>
+                <a href="{{ url_for('shop.index', price='3001') }}" class="filter-item">¥3,001 〜</a>
+            </div>
+        </aside>
+
+        <main>
+            <div class="section-header">
+                <h2>すべての商品 <span style="font-size: 0.8rem; color: #9ca3af;">{{ products|length }} 点の商品</span></h2>
+            </div>
+
+            <div class="product-grid">
+                {% if products %}
+                    {% for p in products %}
+                    <div class="product-card">
+                        <div class="img-container">
+                            <a href="{{ url_for('shop.detail', id=p.id) }}">
+                                <img src="{{ p.image }}" alt="{{ p.name }}">
+                            </a>
+                        </div>
+
+                        <div class="card-content">
+                            <h3 class="p-name">{{ p.name }}</h3>
+                            <p class="p-price">¥{{ "{:,}".format(p.price) }}</p>
+                            <button class="btn-add">🛒 カートへ</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="padding: 40px; text-align: center; color: #6b7280; background: white; border-radius: 12px;">
+                        <p>該当する商品がありません。</p>
+                        <a href="{{ url_for('shop.index') }}" style="color: var(--accent-green);">すべての商品を表示する</a>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+<style>
         :root {
             --bg-gray: #f3f4f6;
             --accent-green: #10b981;
@@ -23,57 +72,7 @@
             line-height: 1.6;
         }
 
-        header {
-            background: var(--white);
-            padding: 10px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .search-bar input {
-            padding: 8px 20px;
-            width: 350px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: #f9fafb;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 12px;
-        }
-
-        .nav-item {
-            text-decoration: none;
-            color: var(--text-main);
-            padding: 8px 16px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: 0.2s;
-        }
-
-        .nav-item.active {
-            border: 2px solid #000;
-            font-weight: bold;
-        }
-
-        .nav-item:hover {
-            background: #f9fafb;
-        }
+       
 
         .container {
             max-width: 1200px;
@@ -198,71 +197,5 @@
         }
 
     </style>
-</head>
 
-<body>
-
-    <header>
-        <div class="logo-area">🏠 Simple EC Store</div>
-        <div class="search-bar"><input type="text" placeholder="キーワードで探す"></div>
-        <div class="nav-links">
-            <a href="{{ url_for('shop.index') }}" class="nav-item active">商品一覧</a>
-            <a href="#" class="nav-item">注文状況</a>
-            <a href="#" class="nav-item">カート</a>
-        </div>
-    </header>
-
-    <div class="container">
-        <aside>
-            <div class="sidebar-group">
-                <div class="sidebar-title">カテゴリー</div>
-                <a href="{{ url_for('shop.index', category='all') }}" class="filter-item">すべて表示</a>
-                <a href="{{ url_for('shop.index', category='coffee') }}" class="filter-item">コーヒー</a>
-                <a href="{{ url_for('shop.index', category='tea') }}" class="filter-item">紅茶</a>
-                <a href="{{ url_for('shop.index', category='tableware') }}" class="filter-item">食器</a>
-            </div>
-
-            <div class="sidebar-group">
-                <div class="sidebar-title">価格帯</div>
-                <a href="{{ url_for('shop.index') }}" class="filter-item">すべて</a>
-                <a href="{{ url_for('shop.index', price='1000') }}" class="filter-item">〜 ¥1,000</a>
-                <a href="{{ url_for('shop.index', price='3000') }}" class="filter-item">¥1,001 〜 ¥3,000</a>
-                <a href="{{ url_for('shop.index', price='3001') }}" class="filter-item">¥3,001 〜</a>
-            </div>
-        </aside>
-
-        <main>
-            <div class="section-header">
-                <h2>すべての商品 <span style="font-size: 0.8rem; color: #9ca3af;">{{ products|length }} 点の商品</span></h2>
-            </div>
-
-            <div class="product-grid">
-                {% if products %}
-                    {% for p in products %}
-                    <div class="product-card">
-                        <div class="img-container">
-                            <a href="{{ url_for('shop.detail', id=p.id) }}">
-                                <img src="{{ p.image }}" alt="{{ p.name }}">
-                            </a>
-                        </div>
-
-                        <div class="card-content">
-                            <h3 class="p-name">{{ p.name }}</h3>
-                            <p class="p-price">¥{{ "{:,}".format(p.price) }}</p>
-                            <button class="btn-add">🛒 カートへ</button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div style="padding: 40px; text-align: center; color: #6b7280; background: white; border-radius: 12px;">
-                        <p>該当する商品がありません。</p>
-                        <a href="{{ url_for('shop.index') }}" style="color: var(--accent-green);">すべての商品を表示する</a>
-                    </div>
-                {% endif %}
-            </div>
-        </main>
-    </div>
-
-</body>
-
-</html>
+{% endblock %}
