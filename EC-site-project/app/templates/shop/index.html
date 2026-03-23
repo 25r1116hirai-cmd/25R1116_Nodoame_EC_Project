@@ -34,7 +34,7 @@
                     <div class="product-card">
                         <div class="img-container">
                             <a href="{{ url_for('shop.detail', id=p.id) }}">
-                                <img src="{{ p.image }}" alt="{{ p.name }}">
+                                <img src="{{ p.image }}" alt="{{ p.name }}" onerror="this.src='https://via.placeholder.com/600x400?text=No+Image';">
                             </a>
                         </div>
 

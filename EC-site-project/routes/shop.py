@@ -7,7 +7,7 @@ def get_products():
     return [
         {"id": 1, "name": "プレミアムコーヒー豆", "price": 1500, "category": "coffee", "image": "https://images.unsplash.com/photo-1611854779393-1b2da9d400fe?auto=format&fit=crop&w=600&q=80", "desc": "厳選されたアラビカ種100%を使用。深いコクと香りが特徴です。"},
         {"id": 2, "name": "オーガニックティーセット", "price": 2200, "category": "tea", "image": "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=600&q=80", "desc": "自然豊かな農園で育った茶葉のセット。心安らぐひとときを。"},
-        {"id": 3, "name": "ハンドメイドマグカップ", "price": 1800, "category": "tableware", "image": "https://images.unsplash.com/photo-1517256011261-5144813f819f?auto=format&fit=crop&w=600&q=80", "desc": "職人が一つ一つ丁寧に焼き上げた一点物。手に馴染む質感が魅力です。"},
+        {"id": 3, "name": "ハンドメイドマグカップ", "price": 1800, "category": "tableware", "image": "https://images.unsplash.com/photo-1514228742587-6b1558fbed20?auto=format&fit=crop&w=600&q=80", "desc": "職人が一つ一つ丁寧に焼き上げた一点物。手に馴染む質感が魅力です。"},
         {"id": 4, "name": "深煎りエスプレッソ", "price": 1600, "category": "coffee", "image": "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=600&q=80", "desc": "濃厚でパンチのある味わい。ミルクとの相性も抜群です。"}
     ]
 
