@@ -1,1 +1,89 @@
-あいうえお
+{# 共通画面 #}
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple EC Store - 商品一覧</title>
+    
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">🏠 Simple EC Store</div>
+        <div class="search-bar"><input type="text" placeholder="キーワードで探す"></div>
+        <div class="nav-links">
+            <a href="{{ url_for('shop.index') }}" class="nav-item active">商品一覧</a>
+            <a href="#" class="nav-item">注文状況</a>
+            <a href="#" class="nav-item">カート</a>
+        </div>
+    </header>
+
+
+    {% block  content%}
+    
+
+    {% endblock  %}
+
+
+</body>
+
+</html>
+
+<style>
+
+         header {
+            background: var(--white);
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .search-bar input {
+            padding: 8px 20px;
+            width: 350px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: #f9fafb;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-main);
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .nav-item.active {
+            border: 2px solid #000;
+            font-weight: bold;
+        }
+
+        .nav-item:hover {
+            background: #f9fafb;
+        }
+
+
+    </style>
