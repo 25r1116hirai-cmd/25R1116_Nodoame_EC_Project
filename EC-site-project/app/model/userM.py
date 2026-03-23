@@ -2,7 +2,7 @@ from app.extensions import db
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class userM(db.Model):
+class UserM(db.Model):
     __tablename__ = "userM"
     userID = db.Column(db.String(10),primary_key=True)
     passWord = db.Column(db.String(255)) # ハッシュ化後は長くなるため、文字数を多めに（128〜255）

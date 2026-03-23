@@ -2,7 +2,7 @@ from app.extensions import db
 from sqlalchemy import func
 # セッションを使用してカートを管理する為、カートテーブルは不要
 
-class cartT(db.Model):
+class CartT(db.Model):
     __tablename__ = "cartT"
     userID = db.Column(db.String(10),primary_key=True) # ユーザーID + 行番号　の複合キー
     lineNo = db.Column(db.String(30),primary_key=True) # ユーザーID + 行番号　の複合キー

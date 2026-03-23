@@ -1,7 +1,7 @@
 from app.extensions import db
 from sqlalchemy import func
 
-class itemM(db.Model):
+class ItemM(db.Model):
     __tablename__ = "itemM"
     itemId = db.Column(db.String(10),primary_key=True)
     categoryName = db.Column(db.String(30)) 
