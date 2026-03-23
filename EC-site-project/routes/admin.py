@@ -1,5 +1,6 @@
+from datetime import datetime
 import os
-from flask import Blueprint, current_app, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from routes.form import ItemForm
 import uuid
 #DBのテーブルとDB操作のファイルをインポート
@@ -129,7 +130,8 @@ def toggle_status(order_id):
 
 
 # 商品管理画面(product.htmlへ遷移)
-@admin.route("/product", methods=["GET", "POST"])
+# 商品create
+@admin.route("/create", methods=["GET", "POST"])
 def product():
     form = ItemForm()
 
@@ -173,3 +175,57 @@ def product():
         return redirect("/admin/product")
 
     return render_template("admin/product.html", form=form)
+
+# 商品read
+@admin.route("/items/list")
+def list_items():
+    # 削除されていない商品だけ取得
+    active_items = ItemM.query.filter_by(delFlg=False).order_by(ItemM.insDate.desc()).all()
+    
+    # 削除済みも含む全商品
+    all_items = ItemM.query.order_by(ItemM.insDate.desc()).all()
+
+    return render_template("admin/items.html",
+                           active_items=active_items,
+                           all_items=all_items)
+
+
+
+@admin.route("/items/edit/<int:item_id>", methods=["GET", "POST"])
+def edit_item(item_id):
+    item = ItemM.query.get_or_404(item_id)
+
+
+    if request.method == "POST":
+        # フォームの値を更新
+        item.itemName = request.form["itemName"]
+        item.itemDetail = request.form["itemDetail"]
+        item.categoryName = request.form["categoryName"]
+        item.price = int(request.form["price"])
+        item.stock = int(request.form["stock"])
+        item.recmdFlg = "recmdFlg" in request.form
+        item.updDate = datetime.now()  # 更新日時
+
+        # 画像ファイルの処理
+        file = request.files.get("imageFile")
+        if file and file.filename:
+            ext = os.path.splitext(file.filename)[1]  # 拡張子
+            filename = f"{uuid.uuid4().hex}{ext}"     # 例: 3f1a2b4c8d9e.png
+            save_path = os.path.join(current_app.static_folder, 'img', filename)
+            file.save(save_path)
+            item.imageName = filename
+        try:
+            db.session.commit()
+            flash("商品を更新しました。", "success")
+            return redirect(url_for("admin.list_items"))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"更新に失敗しました: {e}", "danger")
+
+    return render_template("admin/edit_item.html", item=item)
+
+
+@admin.route("/items/delete/<item_id>", methods=["POST"])
+def delete_item(item_id):
+    # 削除処理を書く
+    return redirect(url_for("admin.list_items"))

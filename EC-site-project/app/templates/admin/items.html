@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>商品一覧</title>
+    
+</head>
+<body>
+    <h1>商品一覧（管理画面）</h1>
+
+    <table>
+  <thead>
+    <tr>
+      <th>商品</th>
+      <th>カテゴリ</th>
+      <th>価格</th>
+      <th>在庫</th>
+      <th>おすすめ</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in active_items %}
+    <tr>
+      <td>
+        <strong>{{ item.itemName }}</strong><br>
+        <small>{{ item.itemDetail[:50] }}{% if item.itemDetail|length > 50 %}...{% endif %}</small>
+      </td>
+      <td>{{ item.categoryName }}</td>
+      <td>¥{{ "{:,}".format(item.price) }}</td>
+      <td><span class="stock-circle">{{ item.stock }}</span></td>
+      <td>
+        {% if item.recmdFlg %}
+          <span class="recommended">✔</span>
+        {% endif %}
+      </td>
+      <td>
+        <a href="{{ url_for('admin.edit_item', item_id=item.itemId) }}">✏️</a>
+        <a href="{{ url_for('admin.delete_item', item_id=item.itemId) }}">🗑️</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<style>
+/* --- テーブル全体 --- */
+table {
+    width: 100%;               /* テーブルを画面いっぱいに */
+    border-collapse: collapse; /* ボーダーを重ねずに一体化 */
+    font-family: Arial, sans-serif;
+}
+
+/* --- ヘッダーセル --- */
+th {
+    background-color: #f0f0f0; /* 薄いグレー */
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+/* --- データセル --- */
+td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+/* --- 削除済み行 --- */
+.deleted {
+    background-color: #fdd; /* 薄い赤 */
+}
+
+/* --- 在庫丸アイコン --- */
+.stock-circle {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #eee; /* 薄いグレー */
+    font-weight: bold;
+}
+
+/* --- おすすめマーク --- */
+.recommended {
+    color: green;
+    font-weight: bold;
+}
+
+/* --- 操作リンク --- */
+td a {
+    margin-right: 8px; /* アイコン間のスペース */
+    text-decoration: none; 
+    font-size: 16px;
+}
+
+/* --- 商品詳細の小文字部分 --- */
+td small {
+    color: #666;
+}
+</style>
+</body>
+</html>
