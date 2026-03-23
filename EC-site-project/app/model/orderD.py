@@ -5,7 +5,7 @@ class CartT(db.Model):
     __tablename__ = "orderD"
     orderId = db.Column(db.String(10),primary_key=True) # ユーザーID + 行番号　の複合キー
     lineNo = db.Column(db.String(30),primary_key=True) # ユーザーID + 行番号　の複合キー
-    ItemId = db.Column(db.String(100))
+    itemId = db.Column(db.String(100))
     amount = db.Column(db.String(100))
     price = db.Column(db.Float)
     tax = db.Column(db.Integer)
@@ -21,7 +21,7 @@ class CartT(db.Model):
         return{
             "userID": str(self.userID),
             "lineNo": int(self.lineNo),
-            "ItemId": str(self.ItemId),
+            "itemId": str(self.ItemId),
             "amount": int(self.amount),
             "price": float(self.price),
             "tax": float(self.tax),
