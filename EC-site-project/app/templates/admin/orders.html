@@ -1,1 +1,91 @@
-{# 発送管理 #}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>注文管理画面</title>
+</head>
+<body>
+    <header>
+        <nav>
+        <a href="{{ url_for('admin.dashboard') }}">ホームへ</a>
+        <a href="{{ url_for('admin.product') }}">商品管理画面</a>
+        <a href="{{ url_for('admin.order') }}">注文管理画面</a>
+        </nav>
+    </header>
+
+<h1>注文管理画面</h1>
+
+<table>
+    <tr>
+        <th>注文ID</th>
+        <th>名前</th>
+        <th>配送先</th>
+        <th>注文内容</th>
+        <th>合計金額</th>
+        <th>配送状況</th>
+    </tr>
+
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.name }}</td>
+        <td>{{ order.address }}</td>
+        <td>{{ order.items }}</td>
+        <td>¥{{ order.total }}</td>
+        <td>
+            <form method="POST" action="{{ url_for('admin.toggle_status', order_id=order.id) }}">
+                {% if order.shipped %}
+                    <button class="btn shipped">発送済み</button>
+                {% else %}
+                    <button class="btn not-shipped">未配送</button>
+                {% endif %}
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 40px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.shipped {
+    background-color: green;
+    color: white;
+}
+
+.not-shipped {
+    background-color: blue;
+    color: white;
+}
+</style>
+
+</body>
+</html>
