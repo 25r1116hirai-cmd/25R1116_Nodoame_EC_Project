@@ -1,5 +1,5 @@
-from . import db, func
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db
+from sqlalchemy import func
 
 class itemM(db.Model):
     __tablename__ = "itemM"
@@ -7,7 +7,7 @@ class itemM(db.Model):
     categoryName = db.Column(db.String(30)) 
     itemName = db.Column(db.String(100))
     itemDetail = db.Column(db.String(100))
-    taxRate = db.Column(db.float)
+    taxRate = db.Column(db.Float)
     stock = db.Column(db.Integer)
     recmdFlg = db.Column(db.Boolean)
     imageName = db.Column(db.String(100))

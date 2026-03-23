@@ -1,5 +1,5 @@
-from . import db, func
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class userM(db.Model):

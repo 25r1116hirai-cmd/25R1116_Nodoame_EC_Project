@@ -1,5 +1,5 @@
-from . import db, func
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db
+from sqlalchemy import func
 # セッションを使用してカートを管理する為、カートテーブルは不要
 
 class cartT(db.Model):
@@ -8,7 +8,7 @@ class cartT(db.Model):
     lineNo = db.Column(db.String(30),primary_key=True) # ユーザーID + 行番号　の複合キー
     ItemId = db.Column(db.String(100))
     amount = db.Column(db.String(100))
-    price = db.Column(db.float)
+    price = db.Column(db.Float)
     tax = db.Column(db.Integer)
     delFlg = db.Column(db.Boolean, default=False, nullable=False)
     updDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())

@@ -1,5 +1,5 @@
-from . import db, func
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db
+from sqlalchemy import func
 
 class cartT(db.Model):
     __tablename__ = "orderH"
