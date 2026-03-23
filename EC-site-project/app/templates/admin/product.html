@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理画面</title>
+</head>
+<body>
+    <header>
+        <nav>
+        <a href="{{ url_for('admin.dashboard') }}">ホームへ</a>
+        <a href="{{ url_for('admin.product') }}">商品管理画面</a>
+        <a href="{{ url_for('admin.order') }}">注文管理画面</a>
+        </nav>
+    </header>
+<h1>商品管理画面</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>カテゴリ</th>
+        <th>商品名</th>
+        <th>説明</th>
+        <th>税率</th>
+        <th>在庫</th>
+        <th>おすすめ</th>
+    </tr>
+
+    {% for product in products %}
+    {% if not product.is_deleted %}
+    <tr>
+        <td>{{ product.id }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.tax_rate }}%</td>
+
+        <!-- 在庫 -->
+        <td>
+            {% if product.stock == 0 %}
+                <span style="color:red;">在庫切れ</span>
+            {% else %}
+                {{ product.stock }}
+            {% endif %}
+        </td>
+
+    
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>    
+
+
+
+
+<style>
+body {
+    font-family: Arial;
+    margin: 40px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* おすすめ */
+.recommended {
+    background-color: orange;
+    color: white;
+}
+
+.not-recommended {
+    background-color: gray;
+    color: white;
+}
+
+/* 削除 */
+.deleted {
+    background-color: red;
+    color: white;
+}
+
+.not-deleted {
+    background-color: green;
+    color: white;
+}
+</style>    
+</body>
+</html>
+
+
+
