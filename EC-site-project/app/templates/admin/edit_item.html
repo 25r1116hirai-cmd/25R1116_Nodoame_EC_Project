@@ -1,6 +1,6 @@
 {% extends "admin/ADbase.html" %}
 {% block content %}   
-   <h1>商品編集</h1>
+<h1>商品編集</h1>
 
 <form method="POST" enctype="multipart/form-data">
   <div>
@@ -24,6 +24,14 @@
   </div>
 
   <div>
+    税率<br>
+    <select name="taxRate">
+      <option value="0.08" {% if item.taxRate == 0.08 %}selected{% endif %}>8%</option>
+      <option value="0.10" {% if item.taxRate == 0.10 %}selected{% endif %}>10%</option>
+    </select>
+  </div>
+
+  <div>
     在庫<br>
     <input type="number" name="stock" value="{{ item.stock }}">
   </div>
@@ -35,9 +43,12 @@
 
   <div>
     画像<br>
+    {% if item.imageName %}
+      <img src="{{ url_for('static', filename='img/' ~ item.imageName) }}" width="150"><br>
+    {% endif %}
     <input type="file" name="imageFile">
   </div>
 
   <button type="submit">更新</button>
 </form>
-{% endblock  %}
+{% endblock %}
