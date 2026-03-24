@@ -1,14 +1,34 @@
 from datetime import datetime
 import os
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask_login import login_user
 from routes.form import ItemForm
 import uuid
 #DBのテーブルとDB操作のファイルをインポート
 from app.model.itemM import ItemM
+from app.model.userM import UserM
 from app.extensions import db
 
 
 admin = Blueprint("admin",__name__)
+
+
+@admin.route("/")
+def login():
+    if request.method == "POST":
+        userID = request.form["login_id"]
+        password = request.form["password"]
+
+        user = UserM.query.filter_by(userID=userID).first()
+
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for("admin.orders"))  # 管理画面へ
+
+        flash("ログイン失敗", "danger")
+
+    return render_template("admin/login.html")
+
 
 # 注文情報の仮データ
 # データベースができたら削除します
