@@ -17,7 +17,7 @@ def base():
     return render_template("base.html")
 
 
-@shop.route('/test')
+@shop.route('/top')
 def index():
     products_list = get_products()
     

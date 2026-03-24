@@ -38,7 +38,7 @@ app.register_blueprint(ec003view, url_prefix="/ec003view")  # 3/24 add kurata
 
 @app.route("/")
 def index():
-    return render_template("base.html")
+    return render_template("shop/index.html")
 
 
 with app.app_context():
