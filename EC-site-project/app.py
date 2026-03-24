@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template
 from flask_login import LoginManager
 from routes.shop import shop
 from routes.checkout import checkout
@@ -38,7 +38,7 @@ app.register_blueprint(ec003view, url_prefix="/ec003view")  # 3/24 add kurata
 
 @app.route("/")
 def index():
-    return render_template("shop/index.html")
+    return redirect("/shop/top") 
 
 
 with app.app_context():
