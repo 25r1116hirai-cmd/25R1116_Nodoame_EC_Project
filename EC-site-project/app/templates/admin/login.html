@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "admin/ADbase.html" %}
 {% block content %}
 
 <div style="max-width: 400px; margin: 0 auto; padding: 20px;">
@@ -17,7 +17,7 @@
     {% endwith %}
 
     <!-- フォーム -->
-    <form method="POST" action="/admin/login">
+    <form method="POST" action="{{ url_for('admin.login') }}">
 
         <div style="margin-bottom: 20px;">
             <label for="login_id">ログインID</label><br>
