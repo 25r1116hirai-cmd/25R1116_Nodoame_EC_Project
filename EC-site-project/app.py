@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from routes.shop import shop
 from routes.checkout import checkout
 from routes.admin import admin
+from routes.ec003view import ec003view  # 3/24 add kurata
 
 # app __init__を設置することで、extension.py(SQL alchemyをインスタンス化)
 from app.model import *
@@ -20,7 +21,7 @@ db.init_app(app)
 app.register_blueprint(shop, url_prefix="/shop")
 app.register_blueprint(checkout, url_prefix="/checkout")
 app.register_blueprint(admin, url_prefix="/admin")
-
+app.register_blueprint(ec003view, url_prefix="/ec003view")  # 3/24 add kurata
 
 
 @app.route("/")

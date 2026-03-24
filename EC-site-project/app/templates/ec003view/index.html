@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カート画面 - Simple EC Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <span class="icon">🏠</span> <strong>Simple EC Store</strong>
+        </div>
+        <nav>
+            <a href="#">商品一覧</a>
+            <a href="#">注文状況</a>
+            <a href="#" class="active">カート <span class="badge">{{ cart_items|length }}</span></a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>ショッピングカート</h1>
+        
+        <div class="cart-container">
+            <div class="cart-list">
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <img src="{{ url_for('static', filename='images/' + item.image_name) }}" alt="商品画像">
+                    <div class="item-info">
+                        <h3>{{ item.item_name }}</h3>
+                        <p>¥{{ "{:,}".format(item.price) }}</p>
+                    </div>
+                    <div class="quantity-control">
+                        <button>-</button>
+                        <span>{{ item.amount }}</span>
+                        <button>+</button>
+                    </div>
+                    <div class="price-display">
+                        ¥{{ "{:,}".format(item.price * item.amount) }}
+                        <span class="delete-icon">🗑️</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <aside class="order-summary">
+                <h3>注文内容</h3>
+                <div class="summary-row">
+                    <span>小計</span>
+                    <span>¥{{ "{:,}".format(subtotal) }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>送料</span>
+                    <span>無料</span>
+                </div>
+                <hr>
+                <div class="total-row">
+                    <span>合計</span>
+                    <span class="total-price">¥{{ "{:,}".format(total) }}</span>
+                </div>
+                <button class="checkout-btn">レジへ進む →</button>
+                <a href="#" class="continue-shopping">買い物を続ける</a>
+            </aside>
+        </div>
+    </main>
+</body>
+</html>
