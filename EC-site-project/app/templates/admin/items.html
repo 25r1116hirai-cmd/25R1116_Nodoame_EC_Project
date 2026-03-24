@@ -6,9 +6,20 @@
     
 </head>
 <body>
-    <h1>商品一覧（管理画面）</h1>
+    <header>
+        <nav>
+        <a href="{{ url_for('admin.list_items') }}">商品管理画面</a>
+        <a href="{{ url_for('admin.order') }}">注文管理画面</a>
+        </nav>
+    </header>
 
-    <table>
+
+<h1>商品一覧（管理画面）</h1>
+
+<!-- 新規登録ページへ遷移 -->
+<a href="{{ url_for('admin.product') }}">＋ 新規登録</a>
+
+<table>
   <thead>
     <tr>
       <th>商品</th>
@@ -16,27 +27,50 @@
       <th>価格</th>
       <th>在庫</th>
       <th>おすすめ</th>
+      <th>状態</th>
       <th>操作</th>
     </tr>
   </thead>
   <tbody>
-    {% for item in active_items %}
-    <tr>
+    {% for item in items %}
+    <tr class="{% if item.delFlg %}deleted{% endif %}">
       <td>
         <strong>{{ item.itemName }}</strong><br>
-        <small>{{ item.itemDetail[:50] }}{% if item.itemDetail|length > 50 %}...{% endif %}</small>
+        <small>
+          {{ item.itemDetail[:50] }}
+          {% if item.itemDetail|length > 50 %}...{% endif %}
+        </small>
       </td>
       <td>{{ item.categoryName }}</td>
       <td>¥{{ "{:,}".format(item.price) }}</td>
       <td><span class="stock-circle">{{ item.stock }}</span></td>
+
+      <!-- おすすめ -->
       <td>
         {% if item.recmdFlg %}
           <span class="recommended">✔</span>
         {% endif %}
       </td>
+
+      <!-- 状態（追加） -->
       <td>
-        <a href="{{ url_for('admin.edit_item', item_id=item.itemId) }}">✏️</a>
-        <a href="{{ url_for('admin.delete_item', item_id=item.itemId) }}">🗑️</a>
+        {% if item.delFlg %}
+          <span style="color:red;">削除済</span>
+        {% else %}
+          <span style="color:green;">有効</span>
+        {% endif %}
+      </td>
+
+      <!-- 操作 -->
+      <td>
+        {% if not item.delFlg %}
+          <a href="{{ url_for('admin.edit_item', item_id=item.itemId) }}">✏️</a>
+
+          <!-- 削除はPOSTにする -->
+          <form action="{{ url_for('admin.delete_item', item_id=item.itemId) }}" method="POST" style="display:inline;">
+            <button type="submit">🗑️</button>
+          </form>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
@@ -98,6 +132,56 @@ td a {
 /* --- 商品詳細の小文字部分 --- */
 td small {
     color: #666;
+}
+
+/* ===== ヘッダー全体 ===== */
+header {
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    padding: 15px 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* ===== ナビゲーション ===== */
+nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* ===== リンク ===== */
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+/* ===== ホバー時 ===== */
+nav a:hover {
+    background-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+/* ===== アクティブっぽくする ===== */
+nav a.active {
+    background-color: white;
+    color: #2c3e50;
+}
+
+/* ===== ページ全体少し整える ===== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f7fa;
+}
+
+/* ===== タイトル ===== */
+h1 {
+    margin: 20px;
+    color: #333;
 }
 </style>
 </body>
