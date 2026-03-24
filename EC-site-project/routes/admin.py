@@ -1,14 +1,34 @@
 from datetime import datetime
 import os
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask_login import login_required, login_user
 from routes.form import ItemForm
 import uuid
 #DBのテーブルとDB操作のファイルをインポート
 from app.model.itemM import ItemM
+from app.model.userM import UserM
 from app.extensions import db
 
 
 admin = Blueprint("admin",__name__)
+
+
+@admin.route("/", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        userID = request.form["login_id"]
+        password = request.form["password"]
+
+        user = UserM.query.filter_by(userID=userID).first()
+
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for("admin.order"))  # 管理画面へ
+
+        flash("ログイン失敗", "danger")
+
+    return render_template("admin/login.html")
+
 
 # 注文情報の仮データ
 # データベースができたら削除します
@@ -45,6 +65,7 @@ orders = [
 # 注文管理画面(orders.htmlへ遷移)
 ## 更新ボタンを押すと発送済みは下に、未発送は上に並び替えるロジック追加
 @admin.route("/orders")
+@login_required
 def order():
     sort = request.args.get("sort")
 

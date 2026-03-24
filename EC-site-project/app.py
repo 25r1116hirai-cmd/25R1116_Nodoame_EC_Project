@@ -23,7 +23,7 @@ db.init_app(app)
 # ログイン管理システム
 login_manager = LoginManager()
 login_manager.init_app(app)
-
+login_manager.login_view = "admin.login" 
 
 # ユーザを識別するための関数
 @login_manager.user_loader
@@ -43,6 +43,20 @@ def index():
 
 with app.app_context():
     db.create_all()
+
+    # テストユーザー作成
+    if not UserM.query.filter_by(userID="admin").first():
+        user = UserM(
+            userID="admin",
+            userName="管理者",
+            role=1,
+            delFlg=False
+        )
+        user.set_password("admin123")
+
+        db.session.add(user)
+        db.session.commit()
+        print("テストユーザー作成OK")
 
 if __name__ == "__main__":
     app.run(debug=True)
