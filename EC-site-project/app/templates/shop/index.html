@@ -1,107 +1,120 @@
 {% extends "base.html" %}
 {% block content %}
 
-
-<div class="container">
-<h2>おすすめ商品</h2>
-  {% for item in reco %}
-      {% set show_btn = false %}
-      {% include "shop/component/card.html" %}
-  {% endfor %}
-</div>
-
-<h2>全商品</h2>
-<div class="container">
-  {% for item in items %}
-      {% set show_btn = true %}
-      {% include "shop/component/card.html" %}
-  {% endfor %}
+<!-- おすすめ商品 -->
+<div class="section">
+  <h2 class="section-title">おすすめ商品</h2>
+  <div class="container_reco">
+    {% for item in reco %}
+        {% include "shop/component/recomend_card.html" %}
+    {% endfor %}
+  </div>
 </div>
 
 
-<div class="categories">
-  {% for cat in categories %}
-    <a href="/top?category={{cat}}">{{cat}}</a>
-   
-  {% endfor %}
+<!-- 全商品 -->
+<div class="section">
+  <h2 class="section-title">全商品</h2>
+  <div class="container">
+    {% for item in items %} 
+        {% include "shop/component/product-card.html" %}
+    {% endfor %}
+  </div>
 </div>
+
+
 
 
 
 <style>
-    /* 全体 */
-.container {
-  display: grid; /* ← ここに移動 */
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
-  padding: 40px;
+/* 共通セクション */
+.section {
+  margin-bottom: 40px;
+}
 
-  background-color: rgb(192, 218, 218);
+/* 共通タイトル */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 24px 0 16px 0; /* 上:24px / 下:16px */
+}
+
+/* おすすめ商品コンテナ */
+.container_reco {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 40px 20px;
+  width: 90%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #b5a28a;
+}
+
+/* 全商品コンテナ */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 40px 20px;
+  width: 90%;
+  margin: 0 auto;
+   background-color:rgb(255, 255, 255));
   border-radius: 16px;
 }
 
-h2 {
-  grid-column: 1 / -1; /* ← タイトルを横幅いっぱいに */
-}
-
-/* カード */
+/* カード共通 */
 .card {
-  position: relative; /* ← これが超重要 */
-  background: white;
-  border-radius: 20px;
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e7e5e4;
-  transition: all 0.3s ease;
+  border: 2px solid #d1d5db;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* ホバーで浮く */
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
-/* 画像 */
 .card img {
   width: 100%;
-  height: 180px;
+  height: 220px;
   object-fit: cover;
+  display: block;
+  border-bottom: 1px solid #d1d5db;
 }
 
-/* テキスト部分 */
 .card-body {
-  position: absolute;
-  bottom: 0;         /* 下に配置 */
-  left: 0;
-  width: 100%;
   padding: 16px;
-
-  color: white;
-
-  /* グラデーション（見やすくする） */
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  box-sizing: border-box;
 }
 
-/* 商品名 */
 .name {
   font-weight: bold;
   font-size: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
-/* 価格 */
 .price {
-  color: #10b981;
   font-weight: bold;
+  color: #10b981;
+  font-size: 1rem;
 }
 
 .btn {
-  display: inline-block;
-  padding: 8px 16px;
+  display: block;
+  width: 100%;
+  padding: 10px;
   background-color: #10b981;
   color: white;
-  text-decoration: none;
+  text-align: center;
   border-radius: 8px;
+  text-decoration: none;
   font-weight: bold;
+  box-sizing: border-box;
 }
 </style>
 {% endblock %}

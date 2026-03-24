@@ -1,11 +1,81 @@
-<!DOCTYPE html>
-<html lang="ja">
+{% extends "base.html" %}
+{% block content %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.name }} - Simple EC Store</title>
-    <style>
+    <div class="main-container">
+        <a href="{{ url_for('shop.index') }}" class="back-link">← 戻る</a>
+
+        <div class="product-flex">
+            <div class="product-image-container">
+                <img src="{{ url_for('static', filename='img/' ~ product.imageName) }}" alt="{{ product.itemName }}">
+            </div>
+
+            <div class="product-info">
+                <span class="badge">おすすめ商品</span>
+                <h1 class="product-title">{{ product.name }}</h1>
+                <div class="product-price">¥{{ "{:,}".format(product.price) }}</div>
+
+                <p class="product-description">{{ product.desc }}</p>
+
+                <div class="stock-status">
+                    <span>在庫状況</span>
+                    <span class="stock-count">在庫あり（残り 12345点）</span>
+                </div>
+
+                
+                    <div class="quantity-selector"
+                        style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <span>数量</span>
+                        <div
+                            style="display: flex; align-items: center; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+                            <button onclick="changeQty(-1)"
+                                style="padding: 8px 15px; background: #f9fafb; border: none; cursor: pointer;">-</button>
+
+                            <span id="quantity"
+                                style="padding: 8px 20px; font-weight: bold; min-width: 40px; text-align: center;">1</span>
+
+                            <button onclick="changeQty(1)"
+                                style="padding: 8px 15px; background: #f9fafb; border: none; cursor: pointer;">+</button>
+                        </div>
+                    </div>
+
+                    <script>
+                        function changeQty(amount) {
+                            // 現在の数値を取得
+                            const qtyElement = document.getElementById('quantity');
+                            let currentQty = parseInt(qtyElement.innerText);
+
+                            // 新しい数値を計算
+                            let newQty = currentQty + amount;
+
+                            // 1未満にはならないように制限
+                            if (newQty < 1) {
+                                newQty = 1;
+                            }
+
+                            // 画面の数字を書き換え
+                            qtyElement.innerText = newQty;
+                        }
+                    </script>
+                    <button class="add-to-cart-btn">
+                        🛒 カートに追加する
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Simple EC Store. All rights reserved.
+    </footer>
+
+</body>
+
+</html>
+
+
+ <style>
         :root {
             --accent-green: #10b981;
             --bg-light: #f9fafb;
@@ -206,88 +276,5 @@
             border-top: 1px solid var(--border-color);
         }
     </style>
-</head>
 
-<body>
-
-    <header>
-        <div class="logo">🏪 Simple EC Store</div>
-        <div class="nav-btns">
-            <a href="{{ url_for('shop.index') }}" class="nav-btn">商品一覧</a>
-            <a href="#" class="nav-btn">注文状況</a>
-            <a href="#" class="nav-btn">カート</a>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <a href="{{ url_for('shop.index') }}" class="back-link">← 戻る</a>
-
-        <div class="product-flex">
-            <div class="product-image-container">
-                <img src="{{ product.image }}" alt="{{ product.name }}">
-            </div>
-
-            <div class="product-info">
-                <span class="badge">おすすめ商品</span>
-                <h1 class="product-title">{{ product.name }}</h1>
-                <div class="product-price">¥{{ "{:,}".format(product.price) }}</div>
-
-                <p class="product-description">{{ product.desc }}</p>
-
-                <div class="stock-status">
-                    <span>在庫状況</span>
-                    <span class="stock-count">在庫あり（残り 12345点）</span>
-                </div>
-
-                
-                    <div class="quantity-selector"
-                        style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                        <span>数量</span>
-                        <div
-                            style="display: flex; align-items: center; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-                            <button onclick="changeQty(-1)"
-                                style="padding: 8px 15px; background: #f9fafb; border: none; cursor: pointer;">-</button>
-
-                            <span id="quantity"
-                                style="padding: 8px 20px; font-weight: bold; min-width: 40px; text-align: center;">1</span>
-
-                            <button onclick="changeQty(1)"
-                                style="padding: 8px 15px; background: #f9fafb; border: none; cursor: pointer;">+</button>
-                        </div>
-                    </div>
-
-                    <script>
-                        function changeQty(amount) {
-                            // 現在の数値を取得
-                            const qtyElement = document.getElementById('quantity');
-                            let currentQty = parseInt(qtyElement.innerText);
-
-                            // 新しい数値を計算
-                            let newQty = currentQty + amount;
-
-                            // 1未満にはならないように制限
-                            if (newQty < 1) {
-                                newQty = 1;
-                            }
-
-                            // 画面の数字を書き換え
-                            qtyElement.innerText = newQty;
-                        }
-                    </script>
-                    <button class="add-to-cart-btn">
-                        🛒 カートに追加する
-                    </button>
-                </div>
-
-
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        &copy; 2026 Simple EC Store. All rights reserved.
-    </footer>
-
-</body>
-
-</html>
+    {% endblock %}
