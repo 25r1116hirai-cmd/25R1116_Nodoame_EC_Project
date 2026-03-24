@@ -1,8 +1,9 @@
 from app.extensions import db
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
-class UserM(db.Model):
+class UserM(db.Model,UserMixin):
     __tablename__ = "userM"
     userID = db.Column(db.String(10),primary_key=True)      # ユーザーID
     passWord = db.Column(db.String(255))                    # パスワード　ハッシュ化後は長くなるため、文字数を多めに（128〜255）
