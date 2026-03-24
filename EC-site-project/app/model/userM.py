@@ -14,7 +14,7 @@ class UserM(db.Model,UserMixin):
     insDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 登録日付
 
     # リレーションの設定(子供を指定)
-    cartT = db.relationship("CartT", backref="userM", uselist=False)
+    #cartT = db.relationship("CartT", backref="userM", uselist=False)
 
 
     # 辞書型で取得
