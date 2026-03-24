@@ -32,8 +32,23 @@ def show_cart():
 # サンプルデータ投入用（動作確認用）
 @ec003view.route('/add_sample')
 def add_sample():
-    sample = CartItem("I001", "プレミアムコーヒー豆", 1500, "coffee.jpg", 1)
-    cart = session.get('cart', [])
-    cart.append(sample.to_dict())
-    session['cart'] = cart
+    # 明細行をリストとして作成
+    order_details = [
+        {"lineNo": 1, "itemId": "I001", "itemName": "プレミアムコーヒー豆", "amount": 2, "price": 1500, "tax": 150},
+        {"lineNo": 2, "itemId": "I005", "itemName": "ドリッパー", "amount": 1, "price": 800, "tax": 80}
+    ]
+    
+    sample = CartItem(
+        orderId="ORD001",
+        orderDate="2026-03-24",
+        userName="倉田 珠誉",
+        orderAddress="大阪府...",
+        cardNum="****-1234",
+        shipFlg=False,
+        price=3800,
+        tax=380,
+        shipping=0,
+        total=4180,
+        details=order_details  # ここでリストを渡す
+    )
     return redirect(url_for('show_cart'))
