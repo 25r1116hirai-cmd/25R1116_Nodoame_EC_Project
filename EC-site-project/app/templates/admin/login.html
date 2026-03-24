@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width: 400px; margin: 0 auto; padding: 20px;">
+    
+    <h1 style="text-align: center; margin-bottom: 30px;">ログイン</h1>
+
+    <!-- エラーメッセージ -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul style="color: red; list-style-type: none; padding: 0;">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- フォーム -->
+    <form method="POST" action="/admin/login">
+
+        <div style="margin-bottom: 20px;">
+            <label for="login_id">ログインID</label><br>
+            <input type="text" id="login_id" name="login_id"
+                   style="width: 100%; padding: 10px; margin-top: 5px;">
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label for="password">パスワード</label><br>
+            <input type="password" id="password" name="password"
+                   style="width: 100%; padding: 10px; margin-top: 5px;">
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%;">ログイン</button>
+    </form>
+
+</div>
+
+<style>
+    .btn {
+        display: inline-block;
+        padding: 12px;
+        background-color: #3498DB;
+        color: white;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .btn:hover {
+        background-color: #2980B9;
+    }
+</style>
+
+{% endblock %}
