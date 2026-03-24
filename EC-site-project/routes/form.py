@@ -6,9 +6,13 @@ from wtforms import SelectField
 
 class ItemForm(FlaskForm):
 
-    itemName = StringField("商品名", validators=[
-        InputRequired("商品名は必須です")
-    ], render_kw={"placeholder": "商品名"})
+    itemName = StringField("商品名",
+    validators=[
+        InputRequired("商品名は必須です"),
+        Length(max=50, message="商品名は50文字以内で入力してください")
+    ],
+    render_kw={"placeholder": "商品名"}
+)
 
     categoryName = StringField("カテゴリー")
 
