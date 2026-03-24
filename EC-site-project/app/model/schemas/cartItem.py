@@ -11,6 +11,7 @@ class CartItem:
         tax,
         shipping,
         total,
+        detail
         ):
         
         self.orderId = orderId
@@ -23,6 +24,7 @@ class CartItem:
         self.tax = tax
         self.shipping = shipping
         self.total = total
+        self.detail = detail
         
 
     def to_dict(self):
