@@ -1,7 +1,9 @@
 from flask import Flask, render_template
+from flask_login import LoginManager
 from routes.shop import shop
 from routes.checkout import checkout
 from routes.admin import admin
+from app.model.userM import UserM
 
 # app __init__を設置することで、extension.py(SQL alchemyをインスタンス化)
 from app.model import *
@@ -15,6 +17,17 @@ app.config['SECRET_KEY'] = 'abc'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DB.db'
 # dbにFlaskアプリを紐付
 db.init_app(app)
+
+# ログイン管理システム
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+# ユーザを識別するための関数
+@login_manager.user_loader
+def load_user(user_id):
+   return db.session.get(UserM, int(user_id))
+
 
 
 app.register_blueprint(shop, url_prefix="/shop")
