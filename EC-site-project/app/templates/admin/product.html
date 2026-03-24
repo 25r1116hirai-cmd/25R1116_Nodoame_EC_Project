@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品管理画面</title>
+    <title>商品新規登録画面</title>
 </head>
 <body>
     <header>
         <nav>
-        <a href="{{ url_for('admin.dashboard') }}">ホームへ</a>
-        <a href="{{ url_for('admin.product') }}">商品管理画面</a>
+        <a href="{{ url_for('admin.list_items') }}">商品管理画面</a>
         <a href="{{ url_for('admin.order') }}">注文管理画面</a>
         </nav>
     </header>
-<h1>商品管理画面</h1>
+<h1>商品新規登録画面</h1>
 <!-- 
 <table>
     <tr>
@@ -138,6 +137,56 @@ th {
 .not-deleted {
     background-color: green;
     color: white;
+}
+
+/* ===== ヘッダー全体 ===== */
+header {
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    padding: 15px 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* ===== ナビゲーション ===== */
+nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* ===== リンク ===== */
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+/* ===== ホバー時 ===== */
+nav a:hover {
+    background-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+/* ===== アクティブっぽくする ===== */
+nav a.active {
+    background-color: white;
+    color: #2c3e50;
+}
+
+/* ===== ページ全体少し整える ===== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f7fa;
+}
+
+/* ===== タイトル ===== */
+h1 {
+    margin: 20px;
+    color: #333;
 }
 </style>    
 </body>

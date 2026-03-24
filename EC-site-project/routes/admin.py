@@ -38,86 +38,24 @@ orders = [
         "shipped": False
     }
 ]
-# 商品の仮データ
-# データベースができたら削除します
-products = [
-    {
-        "id": 2001,
-        "category": "食品",
-        "name": "りんごジュース",
-        "description": "青森県産りんごを使用した100%ジュース",
-        "tax_rate": 8,
-        "stock": 50,
-        "is_recommended": False,
-        "image_url": "/static/img/apple_juice.jpg",
-        "is_deleted": False,
-        "updated_at": "2026-03-20",
-        "created_at": "2026-03-01"
-    },
-    {
-        "id": 2002,
-        "category": "食品",
-        "name": "みかんゼリー",
-        "description": "国産みかんをたっぷり使用したゼリー",
-        "tax_rate": 8,
-        "stock": 30,
-        "is_recommended": False,
-        "image_url": "/static/img/mikan_jelly.jpg",
-        "is_deleted": False,
-        "updated_at": "2026-03-18",
-        "created_at": "2026-03-05"
-    },
-    {
-        "id": 2003,
-        "category": "飲料",
-        "name": "緑茶ペットボトル",
-        "description": "無添加・無糖のすっきりした味わい",
-        "tax_rate": 10,
-        "stock": 100,
-        "is_recommended": False,
-        "image_url": "/static/img/green_tea.jpg",
-        "is_deleted": False,
-        "updated_at": "2026-03-15",
-        "created_at": "2026-02-25"
-    },
-    {
-        "id": 2004,
-        "category": "菓子",
-        "name": "チョコレートクッキー",
-        "description": "サクサク食感の手作りクッキー",
-        "tax_rate": 10,
-        "stock": 0,
-        "is_recommended": False,
-        "image_url": "/static/img/cookie.jpg",
-        "is_deleted": False,
-        "updated_at": "2026-03-10",
-        "created_at": "2026-02-20"
-    },
-    {
-        "id": 2005,
-        "category": "食品",
-        "name": "レトルトカレー",
-        "description": "スパイス香る本格カレー",
-        "tax_rate": 10,
-        "stock": 20,
-        "is_recommended": False,
-        "image_url": "/static/img/curry.jpg",
-        "is_deleted": True,
-        "updated_at": "2026-03-12",
-        "created_at": "2026-02-28"
-    }
-]
 
-# ホーム画面(dashboard.htmlへ遷移)
-@admin.route("/")
-def dashboard():
-    return render_template("admin/dashboard.html")
-
+# ----------------------------------------------------
+# 注文管理画面
+# ----------------------------------------------------
 # 注文管理画面(orders.htmlへ遷移)
+## 更新ボタンを押すと発送済みは下に、未発送は上に並び替えるロジック追加
 @admin.route("/orders")
 def order():
-    return render_template("admin/orders.html",orders=orders)
+    sort = request.args.get("sort")
 
+    if sort == "true":
+        # 並び替えあり
+        display_orders = sorted(orders, key=lambda x: (x["shipped"], x["id"]))
+    else:
+        # 並び替えなし（元の順番）
+        display_orders = orders
+
+    return render_template("admin/orders.html", orders=display_orders)
 # 注文管理画面内にて発送状況を切り替えるロジック
 @admin.route("/toggle/<int:order_id>", methods=["POST"])
 def toggle_status(order_id):
@@ -128,10 +66,24 @@ def toggle_status(order_id):
     return redirect(url_for("admin.order"))
 
 
+# ----------------------------------------------------
+# 商品管理画面
+# ----------------------------------------------------
 
-# 商品管理画面(product.htmlへ遷移)
+# 商品管理画面(admin/items.htmlへ移動)
+# 未削除のデータを上に、削除済のデータを下に並び替えするロジック込み
+@admin.route("/items")
+def list_items():
+    items = ItemM.query.order_by(ItemM.delFlg.asc(), ItemM.insDate.desc()).all()
+    return render_template("admin/items.html", items=items)
+
+# ----------------------------------------------------
+# 商品新規登録画面
+# ----------------------------------------------------
+
+# 商品新規登録画面(product.htmlへ遷移)
 # 商品create
-@admin.route("/create", methods=["GET", "POST"])
+@admin.route("/items/create", methods=["GET", "POST"])
 def product():
     form = ItemForm()
 
@@ -172,29 +124,32 @@ def product():
 
         db.session.add(item)
         db.session.commit()
-        return redirect("/admin/product")
+        return redirect(url_for("admin.list_items"))
 
     return render_template("admin/product.html", form=form)
 
-# 商品read
-@admin.route("/items/list")
-def list_items():
-    # 削除されていない商品だけ取得
-    active_items = ItemM.query.filter_by(delFlg=False).order_by(ItemM.insDate.desc()).all()
+
+
+@admin.route("/items/delete/<int:item_id>", methods=["POST"])
+def delete_item(item_id):
+    item = ItemM.query.get_or_404(item_id)
+    # 論理削除フラグON
+    item.delFlg = True
+    item.updDate = datetime.now()
     
-    # 削除済みも含む全商品
-    all_items = ItemM.query.order_by(ItemM.insDate.desc()).all()
-
-    return render_template("admin/items.html",
-                           active_items=active_items,
-                           all_items=all_items)
+    db.session.commit()
+    return redirect(url_for("admin.list_items"))
 
 
-
+# ----------------------------------------------------
+# 商品編集画面
+# ----------------------------------------------------
+# 編集画面
+# 更新成功時は一覧画面へ遷移
+# 更新失敗時は遷移せずエラーメッセージを表示
 @admin.route("/items/edit/<int:item_id>", methods=["GET", "POST"])
 def edit_item(item_id):
     item = ItemM.query.get_or_404(item_id)
-
 
     if request.method == "POST":
         # フォームの値を更新
@@ -225,7 +180,13 @@ def edit_item(item_id):
     return render_template("admin/edit_item.html", item=item)
 
 
-@admin.route("/items/delete/<item_id>", methods=["POST"])
-def delete_item(item_id):
-    # 削除処理を書く
-    return redirect(url_for("admin.list_items"))
+
+
+
+
+
+
+
+
+
+

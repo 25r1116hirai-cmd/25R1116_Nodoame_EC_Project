@@ -5,54 +5,103 @@
     <title>商品編集</title>
 </head>
 <body>
-    <h1>商品編集</h1>
+    <header>
+        <nav>
+        <a href="{{ url_for('admin.list_items') }}">商品管理画面</a>
+        <a href="{{ url_for('admin.order') }}">注文管理画面</a>
+        </nav>
+    </header>    
+   <h1>商品編集</h1>
 
-    <form action="{{ url_for('admin.edit_item', item_id=item.itemId) }}" method="post" enctype="multipart/form-data">
-    <label for="itemName">商品名</label>
-    <input type="text" id="itemName" name="itemName" value="{{ item.itemName }}" required>
+<form method="POST" enctype="multipart/form-data">
+  <div>
+    商品名<br>
+    <input type="text" name="itemName" value="{{ item.itemName }}">
+  </div>
 
-    <label for="itemDetail">商品詳細</label>
-    <textarea id="itemDetail" name="itemDetail" rows="5">{{ item.itemDetail }}</textarea>
+  <div>
+    カテゴリ<br>
+    <input type="text" name="categoryName" value="{{ item.categoryName }}">
+  </div>
 
-    <label for="categoryName">カテゴリ</label>
-<input type="text" id="categoryName" name="categoryName" value="{{ item.categoryName }}">
+  <div>
+    説明<br>
+    <textarea name="itemDetail">{{ item.itemDetail }}</textarea>
+  </div>
 
-    <label for="price">価格 (¥)</label>
-    <input type="number" id="price" name="price" value="{{ item.price }}" min="0" required>
+  <div>
+    価格<br>
+    <input type="number" name="price" value="{{ item.price }}">
+  </div>
 
-    <label for="stock">在庫</label>
-    <input type="number" id="stock" name="stock" value="{{ item.stock }}" min="0" required>
+  <div>
+    在庫<br>
+    <input type="number" name="stock" value="{{ item.stock }}">
+  </div>
 
-    <label>
-        <input type="checkbox" name="recmdFlg" value="1" {% if item.recmdFlg %}checked{% endif %}>
-        おすすめにする
-    </label>
+  <div>
+    <input type="checkbox" name="recmdFlg" {% if item.recmdFlg %}checked{% endif %}>
+    おすすめ
+  </div>
 
-     <label for="imageFile">商品画像</label>
-{% if item.imageName %}
-    <img id="preview" src="{{ url_for('static', filename='img/' ~ item.imageName) }}?{{ item.updDate.timestamp() }}" alt="商品画像" width="150">
-{% else %}
-    <img id="preview" src="" alt="商品画像" width="150" style="display:none;">
-{% endif %}
-<input type="file" id="imageFile" name="imageFile" accept="image/*">
+  <div>
+    画像<br>
+    <input type="file" name="imageFile">
+  </div>
 
-<script>
-document.getElementById('imageFile').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    const preview = document.getElementById('preview');
-    if (!file) {
-        preview.style.display = 'none';
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-    }
-    reader.readAsDataURL(file);
-});
-</script>
-    <button type="submit">更新する</button>
+  <button type="submit">更新</button>
 </form>
+
+<style>
+    /* ===== ヘッダー全体 ===== */
+header {
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    padding: 15px 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* ===== ナビゲーション ===== */
+nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* ===== リンク ===== */
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+/* ===== ホバー時 ===== */
+nav a:hover {
+    background-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+/* ===== アクティブっぽくする ===== */
+nav a.active {
+    background-color: white;
+    color: #2c3e50;
+}
+
+/* ===== ページ全体少し整える ===== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f7fa;
+}
+
+/* ===== タイトル ===== */
+h1 {
+    margin: 20px;
+    color: #333;
+}
+</style>
 </body>
 </html>
