@@ -1,0 +1,47 @@
+<a href="{{ url_for('shop.detail', id=item.itemId) }}" class="card-link">
+  <div class="card">
+    <img src="{{ url_for('static', filename='img/' ~ item.imageName) }}" alt="{{ item.itemName }}">
+    <div class="card-body">
+      <p class="name">{{ item.itemName }}</p>
+      <p class="price">¥{{ "{:,}".format(item.price) }}</p>
+    </div>
+  </div>
+</a>
+
+<style>
+
+.card-body {
+  position: absolute;
+  bottom: 0;        
+  left: 0;
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  color: white;
+  
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+
+.card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;           /* 角丸 */
+  overflow: hidden;
+  border: 2px solid #d1d5db;     /* グレー系の枠線 */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* 軽い影で浮かせる */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+</style>
