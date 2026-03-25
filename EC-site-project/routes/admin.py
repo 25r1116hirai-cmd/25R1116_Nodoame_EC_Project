@@ -86,12 +86,16 @@ def order():
 
 
 # 注文管理画面内にて発送状況を切り替えるロジック
-@admin.route("/toggle/<int:order_id>", methods=["POST"])
+@admin.route("/toggle/<string:order_id>", methods=["POST"])
+@login_required
 def toggle_status(order_id):
-    for order in orders:
-        if order["id"] == order_id:
-            order["shipped"] = not order["shipped"]
-            break
+    if current_user.role != 1:
+        flash("管理者専用ページです", "danger")
+        return redirect(url_for("shop.index"))
+
+    order = OrderH.query.get_or_404(order_id)
+    order.shipFlg = not order.shipFlg
+    db.session.commit()
     return redirect(url_for("admin.order"))
 
 
