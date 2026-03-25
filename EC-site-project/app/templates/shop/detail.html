@@ -34,9 +34,22 @@
                 {% include "shop/component/cart-controls.html" %}
             </div>
 
-            <button class="add-to-cart-btn">
+            <button type="button" class="add-to-cart-btn" onclick="addToCart('{{ product.id }}')">
                 🛒 カートに追加する
             </button>
+
+            <script>
+            function addToCart(itemId) {
+                fetch(`/add_to_cart/${itemId}`, {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message); // 「カートに追加しました」と出す
+                });
+            }
+            </script>
+
         </div>
     </div>
 </div>

@@ -18,6 +18,11 @@ def index():
 def show_cart():
     # セッションからカート情報を取得（なければ空リスト）
     cart_data = session.get('cart', [])
+
+    # ※※※セッション切れ or 空カート対策※※※
+    # カートに情報がないのに表示はさせない
+    if not cart_data:
+        return redirect("/")
     
     # 辞書データからオブジェクトのリストに復元
     cart_items = [CartItem.from_dict(item) for item in cart_data]
