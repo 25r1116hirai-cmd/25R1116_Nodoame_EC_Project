@@ -94,6 +94,7 @@ def toggle_status(order_id):
 # 商品管理画面(admin/items.htmlへ移動)
 # 未削除のデータを上に、削除済のデータを下に並び替えするロジック込み
 @admin.route("/items")
+@login_required
 def list_items():
     items = ItemM.query.order_by(ItemM.delFlg.asc(), ItemM.insDate.desc()).all()
     return render_template("admin/items.html", items=items)
@@ -105,6 +106,7 @@ def list_items():
 # 商品新規登録画面(product.htmlへ遷移)
 # 商品create
 @admin.route("/items/create", methods=["GET", "POST"])
+@login_required
 def product():
     form = ItemForm()
 
@@ -152,6 +154,7 @@ def product():
 
 
 @admin.route("/items/delete/<int:item_id>", methods=["POST"])
+@login_required
 def delete_item(item_id):
     item = ItemM.query.get_or_404(item_id)
     # 論理削除フラグON
@@ -169,6 +172,7 @@ def delete_item(item_id):
 # 更新成功時は一覧画面へ遷移
 # 更新失敗時は遷移せずエラーメッセージを表示
 @admin.route("/items/edit/<int:item_id>", methods=["GET", "POST"])
+@login_required
 def edit_item(item_id):
     item = ItemM.query.get_or_404(item_id)
 

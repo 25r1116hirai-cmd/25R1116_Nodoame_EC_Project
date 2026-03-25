@@ -73,6 +73,7 @@ table {
 }
 
 /* --- ヘッダーセル --- */
+/* 商品	カテゴリ	価格	在庫	おすすめ	状態	操作の部分 */
 th {
     background-color: #f0f0f0; /* 薄いグレー */
     border: 1px solid #ccc;
@@ -86,12 +87,13 @@ td {
     padding: 8px;
 }
 
-/* --- 削除済み行 --- */
+/* --- 削除済みの行の色指定 --- */
 .deleted {
     background-color: #fdd; /* 薄い赤 */
 }
 
 /* --- 在庫丸アイコン --- */
+
 .stock-circle {
     display: inline-block;
     width: 24px;
@@ -101,26 +103,24 @@ td {
     border-radius: 50%;
     background-color: #eee; /* 薄いグレー */
     font-weight: bold;
-}
+} 
 
-/* --- おすすめマーク --- */
+/* --- おすすめのチェックマーク --- */
 .recommended {
     color: green;
     font-weight: bold;
 }
 
-/* --- 操作リンク --- */
+/* --- 編集画面へのリンクの装飾 --- */
 td a {
     margin-right: 8px; /* アイコン間のスペース */
     text-decoration: none; 
     font-size: 16px;
 }
 
-/* --- 商品詳細の小文字部分 --- */
+/* --- 商品詳細の小文字になっている部分 --- */
 td small {
     color: #666;
 }
-
-
 </style>
 {% endblock  %}

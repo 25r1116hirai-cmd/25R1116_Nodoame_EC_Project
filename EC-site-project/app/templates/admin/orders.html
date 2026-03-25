@@ -43,36 +43,41 @@ body {
     margin: 40px;
 }
 
+/* 「注文管理画面」の文字サイズ */
 h1 {
     margin-bottom: 20px;
 }
-
+/* テーブル全体の横幅は最大に */
+/* border-collapse: collapse;でセル同士の枠線をくっつける */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
-th, td {
+/* 注文ID,名前,配送先,注文内容,合計金額,配送状況の欄の枠線 */
+th,td {
     border: 1px solid #ccc;
     padding: 10px;
 }
-
+/* 注文ID,名前,配送先,注文内容,合計金額,配送状況の欄の背景の色 */
 th {
     background-color: #f0f0f0;
 }
 
+/* 発送済み,未発送ボタンの装飾 */
 .btn {
     padding: 6px 12px;
     border-radius: 5px;
     border: none;
     cursor: pointer;
 }
-
+/* 発送済み状態のボタンの色 */
 .shipped {
     background-color: green;
     color: white;
 }
 
+/* 未発送状態のボタンの色 */
 .not-shipped {
     background-color: blue;
     color: white;
