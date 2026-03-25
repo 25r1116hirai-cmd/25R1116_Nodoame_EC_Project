@@ -20,7 +20,7 @@ class OrderH(db.Model):
 
     # リレーションの設定(子供を指定)
     # 子モデルとのリレーション
-    details = relationship("OrderD", back_populates="header", cascade="all, delete-orphan")
+    order_details = relationship("OrderD", back_populates="header", cascade="all, delete-orphan")
 
     # 辞書型で取得
     def getData(self):

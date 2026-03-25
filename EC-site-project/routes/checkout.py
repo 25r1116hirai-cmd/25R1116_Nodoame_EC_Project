@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, flash, redirect, render_template, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 from app.extensions import db
 from app.model.itemM import ItemM
@@ -107,21 +107,24 @@ def complete():
         flash("カートが空です")
         return redirect(url_for("checkout.index"))
 
-    # 注文ID（タイムスタンプ）
-    order_id = datetime.now().strftime("%Y%m%d%H%M%S")
+    userName = request.form.get("userName")
+    orderAddress = request.form.get("orderAddress")
+    tel = request.form.get("tel")
+    cardNum = request.form.get("cardNum")
 
-    subtotal = sum(item["price"] * item["amount"] for item in cart)
+    order_id = datetime.now().strftime("%Y%m%d%H%M%S")
+    subtotal = sum(item['price'] * item['amount'] for item in cart)
     shipping = 800 if subtotal > 0 else 0
     tax = int(subtotal * 0.1)
     total = subtotal + shipping + tax
 
-    # ===== ヘッダ保存 =====
+    # ヘッダ保存
     order_h = OrderH(
         orderId=order_id,
         orderDate=datetime.now().strftime("%Y-%m-%d"),
-        userName=current_user.userName,
-        orderAddress=getattr(current_user, "address", ""),  # address があれば
-        cardNum="****",  # 必要に応じてフォームで取得
+        userName=userName,
+        orderAddress=orderAddress,
+        cardNum=cardNum,
         shipFlg=False,
         price=subtotal,
         tax=tax,
@@ -130,7 +133,7 @@ def complete():
     )
     db.session.add(order_h)
 
-    # ===== 明細保存 =====
+    # 明細保存
     for i, item in enumerate(cart, start=1):
         order_d = OrderD(
             orderId=order_id,
@@ -143,8 +146,21 @@ def complete():
         db.session.add(order_d)
 
     db.session.commit()
-
-    # カート削除
     session.pop("cart", None)
     flash("注文が完了しました！")
     return render_template("checkout/complete.html", order_id=order_id, total=total)
+
+
+@checkout.route("/payment", methods=["GET", "POST"])
+@login_required
+def payment():
+    cart = session.get("cart", [])
+    if not cart:
+        flash("カートに商品がありません")
+        return redirect(url_for("checkout.index"))
+
+    if request.method == "POST":
+        # フォームからPOSTされたらcompleteにリダイレクト
+        return redirect(url_for("checkout.complete"))
+
+    return render_template("checkout/payment.html", cart_items=cart)

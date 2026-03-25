@@ -68,8 +68,8 @@
                 <span class="total-price">¥{{ "{:,}".format(total or 0) }}</span>
             </div>
 
-            <!-- レジボタン（リンク化） -->
-            <a href="{{ url_for('checkout.index') }}" class="checkout-btn">
+            <!-- レジボタン -->
+<a href="{{ url_for('checkout.payment') }}" class="checkout-btn">
     レジへ進む →
 </a>
 

@@ -15,7 +15,7 @@ class OrderD(db.Model):
     insDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 登録日付
 
     # リレーションの設定(子供を指定)
-    header = relationship("OrderH", back_populates="details")
+    order_h = relationship("OrderH", back_populates="details")
 
     # # 辞書型で取得
     # def getData(self):
