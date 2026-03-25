@@ -40,10 +40,20 @@
 
 <script>
 function changeQty(amount) {
-    const qtyElement = document.getElementById('quantity');
-    let currentQty = parseInt(qtyElement.innerText);
-    let newQty = currentQty + amount;
-    if (newQty < 1) newQty = 1;
-    qtyElement.innerText = newQty;
+    const qty = document.getElementById("quantity");
+
+    //  今の数字を取り出す
+    let number = Number(qty.textContent);
+
+    //  足す or 引く
+    number = number + amount;
+
+    //  1より小さくならないようにする
+    if (number < 1) {
+        number = 1;
+    }
+
+    //  新しい数字を画面に表示
+    qty.textContent = number;
 }
 </script>
