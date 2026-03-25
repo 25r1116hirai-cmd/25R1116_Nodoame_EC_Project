@@ -8,7 +8,7 @@ ec003view.secret_key = 'your_secret_key' # セッション利用
 def index():
 # 空の状態で画面を表示させるための初期値
     return render_template(
-        "ec003view/index.html", 
+        "shop/cart.html", 
         cart_items=[], 
         subtotal=0, 
         total=0
@@ -52,3 +52,4 @@ def add_sample():
         details=order_details  # ここでリストを渡す
     )
     return redirect(url_for('show_cart'))
+    
