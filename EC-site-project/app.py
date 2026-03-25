@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template
 from flask_login import LoginManager
+from flask_migrate import Migrate
 from routes.shop import shop
 from routes.checkout import checkout
 from routes.admin import admin
@@ -19,6 +20,10 @@ app.config['SECRET_KEY'] = 'abc'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DB.db'
 # dbにFlaskアプリを紐付
 db.init_app(app)
+
+
+#マイグレ初期化
+migrate = Migrate(app, db)
 
 # ログイン管理システム
 login_manager = LoginManager()
@@ -59,7 +64,7 @@ with app.app_context():
         print("テストユーザー作成OK")
 
 if __name__ == "__main__":
-    app.run(debug=True,host='127.0.0.1', port=5000)
+    app.run(debug=True,port=5001)
 
 
   

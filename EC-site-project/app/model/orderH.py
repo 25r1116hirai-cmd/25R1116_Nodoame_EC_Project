@@ -1,7 +1,7 @@
 from app.extensions import db
 from sqlalchemy import func
 
-class CartT(db.Model):
+class OrderH(db.Model):
     __tablename__ = "orderH"
     orderId = db.Column(db.String(10),primary_key=True)     # 発注ID 
     orderDate = db.Column(db.String(10))                    # 注文日付

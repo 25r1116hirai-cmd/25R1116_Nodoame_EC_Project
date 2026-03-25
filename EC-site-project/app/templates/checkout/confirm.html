@@ -2,49 +2,101 @@
 {% extends "base.html" %}
 {% block content %}
 
- <main>
-        <h1>ショッピングカート</h1>
-        
-        <div class="cart-container">
-            <div class="cart-list">
+<main>
+    <h1>ショッピングカート</h1>
+
+    <div class="cart-container">
+        <div class="cart-list">
+
+            {% if cart_items %}
                 {% for item in cart_items %}
                 <div class="cart-item">
-                    <img src="{{ url_for('static', filename='images/' + item.imageName) }}" alt="商品画像">
+
+                    <!-- 画像（None対策 + alt修正） -->
+                    <img src="{{ url_for('static', filename='images/' + (item.imageName or 'noimage.png')) }}" alt="商品画像">
+
                     <div class="item-info">
                         <h3>{{ item.itemName }}</h3>
                         <p>¥{{ "{:,}".format(item.price) }}</p>
                     </div>
+
+                    <!-- 数量変更（POSTに変更） -->
                     <div class="quantity-control">
-                        <button>-</button>
+                        <form action="{{ url_for('checkout.decrease', item_id=item.itemId) }}" method="post" style="display:inline;">
+                            <button type="submit">-</button>
+                        </form>
+
                         <span>{{ item.amount }}</span>
-                        <button>+</button>
+
+                        <form action="{{ url_for('checkout.increase', item_id=item.itemId) }}" method="post" style="display:inline;">
+                            <button type="submit">+</button>
+                        </form>
                     </div>
+
+                    <!-- 合計 + 削除 -->
                     <div class="price-display">
                         ¥{{ "{:,}".format(item.price * item.amount) }}
-                        <span class="delete-icon">🗑️</span>
+                        <a href="{{ url_for('checkout.remove_from_cart', item_id=item.itemId) }}" class="delete-icon">🗑️</a>
                     </div>
+
                 </div>
                 {% endfor %}
+            {% else %}
+                <p>カートに商品がありません</p>
+            {% endif %}
+
+        </div>
+
+        <!-- サマリー -->
+        <aside class="order-summary">
+            <h3>注文内容</h3>
+
+            <div class="summary-row">
+                <span>小計</span>
+                <span>¥{{ "{:,}".format(subtotal or 0) }}</span>
             </div>
 
-            <aside class="order-summary">
-                <h3>注文内容</h3>
-                <div class="summary-row">
-                    <span>小計</span>
-                    <span>¥{{ "{:,}".format(subtotal or 0) }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>送料</span>
-                    <span>全国一律800円</span>
-                </div>
-                <hr>
-                <div class="total-row">
-                    <span>合計</span>
-                    <span class="total-price">¥{{ "{:,}".format(total or 0) }}</span>
-                </div>
-                <button class="checkout-btn">レジへ進む →</button>
-                <a href="#" class="continue-shopping">買い物を続ける</a>
-            </aside>
-        </div>
-    </main>
+            <div class="summary-row">
+                <span>送料</span>
+                <span>¥{{ "{:,}".format(shipping or 0) }}</span>
+            </div>
+
+            <hr>
+
+            <div class="total-row">
+                <span>合計</span>
+                <span class="total-price">¥{{ "{:,}".format(total or 0) }}</span>
+            </div>
+
+            <!-- レジボタン（リンク化） -->
+            <a href="{{ url_for('checkout.index') }}" class="checkout-btn">
+    レジへ進む →
+</a>
+
+            <!-- 戻るリンク -->
+            <a href="{{ url_for('shop.index') }}" class="continue-shopping">
+                買い物を続ける
+            </a>
+        </aside>
+    </div>
+</main>
+
+<style>
+.delete-icon {
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    color: #888;
+}
+
+.delete-icon:hover {
+    color: red;
+}
+
+.quantity-control button {
+    padding: 4px 8px;
+    cursor: pointer;
+}
+</style>
+
 {% endblock %}

@@ -1,7 +1,7 @@
 from app.extensions import db
 from sqlalchemy import func
 
-class CartT(db.Model):
+class OrderD(db.Model):
     __tablename__ = "orderD"
     orderId = db.Column(db.String(10),primary_key=True)     # 発注ID 複合キー
     lineNo = db.Column(db.Integer,primary_key=True)         # 行番号 複合キー
