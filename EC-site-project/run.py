@@ -6,6 +6,7 @@ from routes.checkout import checkout
 from routes.admin import admin
 from app.model.userM import UserM
 from routes.ec003view import ec003view  # 3/24 add kurata
+from routes.auth import auth
 
 
 # app __init__を設置することで、extension.py(SQL alchemyをインスタンス化)
@@ -28,7 +29,9 @@ migrate = Migrate(app, db)
 # ログイン管理システム
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "admin.login" 
+
+login_manager.login_view = "auth.login"  # 一般ユーザー用ログイン
+login_manager.login_message = "カートに入れるにはログインが必要です"
 
 # ユーザを識別するための関数
 @login_manager.user_loader
@@ -39,7 +42,7 @@ app.register_blueprint(shop, url_prefix="/shop")
 app.register_blueprint(checkout, url_prefix="/checkout")
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(ec003view, url_prefix="/ec003view")  # 3/24 add kurata
-
+app.register_blueprint(auth, url_prefix="/auth")
 
 @app.route("/")
 def index():
