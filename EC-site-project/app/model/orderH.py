@@ -1,5 +1,6 @@
 from app.extensions import db
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
 
 class OrderH(db.Model):
     __tablename__ = "orderH"
@@ -18,7 +19,8 @@ class OrderH(db.Model):
     insDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 登録日付
 
     # リレーションの設定(子供を指定)
-    # 無
+    # 子モデルとのリレーション
+    details = relationship("OrderD", back_populates="header", cascade="all, delete-orphan")
 
     # 辞書型で取得
     def getData(self):
@@ -35,5 +37,6 @@ class OrderH(db.Model):
             "total": float(self.total),
             "delFlg": bool(self.delFlg),
             "updDate": self.updDate.strftime('%Y/%m/%d %H:%M:%S') if self.updDate else None,
-            "insDate": self.insDate.strftime('%Y/%m/%d %H:%M:%S') if self.insDate else None
+            "insDate": self.insDate.strftime('%Y/%m/%d %H:%M:%S') if self.insDate else None,
+            "details": [d.getData() for d in self.details]  # 子明細も含める
         }

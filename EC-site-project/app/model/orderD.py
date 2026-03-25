@@ -1,9 +1,10 @@
 from app.extensions import db
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
 
 class OrderD(db.Model):
     __tablename__ = "orderD"
-    orderId = db.Column(db.String(10),primary_key=True)     # 発注ID 複合キー
+    orderId = db.Column(db.String(10), db.ForeignKey('orderH.orderId',name='fk_orderD_orderH'), primary_key=True)    # 発注ID 複合キー
     lineNo = db.Column(db.Integer,primary_key=True)         # 行番号 複合キー
     itemId = db.Column(db.String(10))                      # 商品ID
     amount = db.Column(db.Integer, default=0)               # 数量
@@ -14,18 +15,20 @@ class OrderD(db.Model):
     insDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 登録日付
 
     # リレーションの設定(子供を指定)
-    # 無
+    header = relationship("OrderH", back_populates="details")
 
-    # 辞書型で取得
-    def getData(self):
-        return{
-            "userID": str(self.userID),
-            "lineNo": int(self.lineNo),
-            "itemId": str(self.ItemId),
-            "amount": int(self.amount),
-            "price": float(self.price),
-            "tax": float(self.tax),
-            "delFlg": bool(self.delFlg),
-            "updDate": self.updDate.strftime('%Y/%m/%d %H:%M:%S') if self.updDate else None,
-            "insDate": self.insDate.strftime('%Y/%m/%d %H:%M:%S') if self.insDate else None
-        }
+    # # 辞書型で取得
+    # def getData(self):
+    #     return{
+    #         "userID": str(self.userID),
+    #         # → OrderD に userID は存在しない
+    #         "lineNo": int(self.lineNo),
+    #         "itemId": str(self.ItemId),
+    #         # → 大文字 I は間違い。itemId です
+    #         "amount": int(self.amount),
+    #         "price": float(self.price),
+    #         "tax": float(self.tax),
+    #         "delFlg": bool(self.delFlg),
+    #         "updDate": self.updDate.strftime('%Y/%m/%d %H:%M:%S') if self.updDate else None,
+    #         "insDate": self.insDate.strftime('%Y/%m/%d %H:%M:%S') if self.insDate else None
+    #     }
