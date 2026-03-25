@@ -65,22 +65,43 @@ orders = [
 # ----------------------------------------------------
 # 注文管理画面(orders.htmlへ遷移)
 ## 更新ボタンを押すと発送済みは下に、未発送は上に並び替えるロジック追加
+# 注文管理画面
 @admin.route("/orders")
 @login_required
 def order():
-    # 管理者権限チェック
     if current_user.role != 1:
         flash("管理者専用ページです", "danger")
         return redirect(url_for("shop.index"))
 
     sort = request.args.get("sort")
 
-    # DBから注文取得
-    display_orders = OrderH.query.all()
+    # DBから注文ヘッダを取得
+    orders = OrderH.query.order_by(OrderH.orderDate.desc()).all()
+
+    # 明細をセット
+    display_orders = []
+    for o in orders:
+        items = [
+            {
+                "itemName": d.item.itemName,  # ItemM とリレーションがある場合
+                "amount": d.amount,
+                "price": d.price,
+                "tax": d.tax
+            }
+            for d in o.order_details  # OrderH にリレーションを張っている場合
+        ]
+        display_orders.append({
+            "orderId": o.orderId,
+            "userName": o.userName,
+            "orderAddress": o.orderAddress,
+            "items": items,
+            "total": o.total,
+            "shipFlg": o.shipFlg
+        })
 
     # 並び替え
     if sort == "true":
-        display_orders = sorted(display_orders, key=lambda x: (x.shipFlg, x.orderId))
+        display_orders = sorted(display_orders, key=lambda x: (x["shipFlg"], x["orderId"]))
 
     return render_template("admin/orders.html", orders=display_orders)
 
