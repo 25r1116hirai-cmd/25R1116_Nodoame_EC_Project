@@ -1,0 +1,4 @@
+<h2>注文完了！</h2>
+<p>注文ID: {{ order_id }}</p>
+<p>合計金額: ¥{{ "{:,}".format(total) }}</p>
+<a href="{{ url_for('shop.index') }}">ショップへ戻る</a>
