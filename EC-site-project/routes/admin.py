@@ -113,7 +113,7 @@ def product():
         categoryName = form.categoryName.data
         itemDetail = form.itemDetail.data
         price = form.price.data
-        taxRate = form.taxRate.data
+        taxRate = float(form.taxRate.data) #文字列でくるため、変換
         stock = form.stock.data
         recmdFlg = form.recmdFlg.data
 
@@ -178,25 +178,31 @@ def edit_item(item_id):
         item.itemDetail = request.form["itemDetail"]
         item.categoryName = request.form["categoryName"]
         item.price = int(request.form["price"])
+        item.taxRate = float(request.form["taxRate"])
         item.stock = int(request.form["stock"])
         item.recmdFlg = "recmdFlg" in request.form
         item.updDate = datetime.now()  # 更新日時
 
-        # 画像ファイルの処理
+        # -------- 画像更新 --------
         file = request.files.get("imageFile")
         if file and file.filename:
-            ext = os.path.splitext(file.filename)[1]  # 拡張子
-            filename = f"{uuid.uuid4().hex}{ext}"     # 例: 3f1a2b4c8d9e.png
+            ext = os.path.splitext(file.filename)[1]
+            filename = f"{uuid.uuid4().hex}{ext}"
+
             save_path = os.path.join(current_app.static_folder, 'img', filename)
             file.save(save_path)
+
             item.imageName = filename
+
+        # -------- 保存 --------
         try:
             db.session.commit()
-            flash("商品を更新しました。", "success")
+            flash("商品を更新しました", "success")
             return redirect(url_for("admin.list_items"))
+
         except Exception as e:
             db.session.rollback()
-            flash(f"更新に失敗しました: {e}", "danger")
+            flash(f"更新失敗: {e}", "danger")
 
     return render_template("admin/edit_item.html", item=item)
 

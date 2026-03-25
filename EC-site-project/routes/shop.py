@@ -1,56 +1,58 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, abort, render_template, request
+#DBのテーブルとDB操作のファイルをインポート
+from app.model.itemM import ItemM
+from app.extensions import db
 
 shop = Blueprint("shop", __name__)
 
-# 商品データを共通で使えるように関数化しました
-def get_products():
-    return [
-        {"id": 1, "name": "プレミアムコーヒー豆", "price": 1500, "category": "coffee", "image": "https://images.unsplash.com/photo-1611854779393-1b2da9d400fe?auto=format&fit=crop&w=600&q=80", "desc": "厳選されたアラビカ種100%を使用。深いコクと香りが特徴です。"},
-        {"id": 2, "name": "オーガニックティーセット", "price": 2200, "category": "tea", "image": "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=600&q=80", "desc": "自然豊かな農園で育った茶葉のセット。心安らぐひとときを。"},
-        {"id": 3, "name": "ハンドメイドマグカップ", "price": 1800, "category": "tableware", "image": "https://images.unsplash.com/photo-1514228742587-6b1558fbed20?auto=format&fit=crop&w=600&q=80", "desc": "職人が一つ一つ丁寧に焼き上げた一点物。手に馴染む質感が魅力です。"},
-        {"id": 4, "name": "深煎りエスプレッソ", "price": 1600, "category": "coffee", "image": "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=600&q=80", "desc": "濃厚でパンチのある味わい。ミルクとの相性も抜群です。"}
-    ]
-
-@shop.route('/')
-def base():
-    
-    return render_template("base.html")
 
 
-@shop.route('/test')
+@shop.route('/top')
 def index():
-    products_list = get_products()
+
+    # 共通：論理削除は除く
+    # すべて 
+    all_items = ItemM.query.filter_by(delFlg=False).all()
+
+    # おすすめ、更新日で降順、上限3件分をすべて
+    recommend_items = ItemM.query.filter_by(recmdFlg=True,delFlg=False).order_by(ItemM.updDate.desc()).limit(3).all()
     
-    # URLから「category」と「price」の条件を取得
-    cat = request.args.get('category')
-    price_range = request.args.get('price')
+    print(all_items)
+    # カテゴリから重複を除去
+    categories = sorted({item.categoryName for item in all_items})
 
-    filtered_products = products_list
+    # カテゴリで絞り込み
+    selected_category = request.args.get("category")
+    if selected_category and selected_category != "all":
+        filtered_items = [item for item in all_items if item.categoryName == selected_category]
+    else:
+        filtered_items = all_items
 
-    # カテゴリーで絞り込み
-    if cat and cat != 'all':
-        filtered_products = [p for p in filtered_products if p.get('category') == cat]
+    # 価格帯で絞り込み（もし price パラメータがある場合）
+    price_filters = {
+    '1000': lambda p: p <= 1000,
+    '3000': lambda p: 1001 <= p <= 3000,
+    '3001': lambda p: p >= 3001,
+}
+    price_range = request.args.get("price") 
+    if price_range in price_filters:
+        filtered_items = [item for item in filtered_items if price_filters[price_range](item.price)]
 
-    # 価格帯で絞り込み
-    if price_range:
-        if price_range == '1000':
-            filtered_products = [p for p in filtered_products if p['price'] <= 1000]
-        elif price_range == '3000':
-            filtered_products = [p for p in filtered_products if 1001 <= p['price'] <= 3000]
-        elif price_range == '3001':
-            filtered_products = [p for p in filtered_products if p['price'] >= 3001]
-
-    return render_template("shop/index.html", products=filtered_products)
+    return render_template("shop/index.html",
+                           items=filtered_items,
+                           all_items=all_items,
+                           reco=recommend_items,
+                           categories=categories,
+                           selected_category=selected_category
+                          )
 
 @shop.route('/product/<int:id>')
 def detail(id):
-    products_list = get_products()
-    # IDが一致する商品を探す
-    product = next((p for p in products_list if p['id'] == id), None)
-    
-    if product is None:
-        return "商品が見つかりません", 404
-        
-    return render_template("shop/detail.html", product=product)
+    item = ItemM.query.get(id)
+
+    if not item:
+        abort(404)
+
+    return render_template("shop/detail.html", product=item)
     
  

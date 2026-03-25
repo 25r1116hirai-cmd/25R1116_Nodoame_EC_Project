@@ -1,201 +1,120 @@
-{# 商品一覧画面 #}
-
 {% extends "base.html" %}
+{% block content %}
 
-{%block content%}
+<!-- おすすめ商品 -->
+<div class="section">
+  <h2 class="section-title">おすすめ商品</h2>
+  <div class="container_reco">
+    {% for item in reco %}
+        {% include "shop/component/recomend_card.html" %}
+    {% endfor %}
+  </div>
+</div>
 
-    <div class="container">
-        <aside>
-            <div class="sidebar-group">
-                <div class="sidebar-title">カテゴリー</div>
-                <a href="{{ url_for('shop.index', category='all') }}" class="filter-item">すべて表示</a>
-                <a href="{{ url_for('shop.index', category='coffee') }}" class="filter-item">コーヒー</a>
-                <a href="{{ url_for('shop.index', category='tea') }}" class="filter-item">紅茶</a>
-                <a href="{{ url_for('shop.index', category='tableware') }}" class="filter-item">食器</a>
-            </div>
 
-            <div class="sidebar-group">
-                <div class="sidebar-title">価格帯</div>
-                <a href="{{ url_for('shop.index') }}" class="filter-item">すべて</a>
-                <a href="{{ url_for('shop.index', price='1000') }}" class="filter-item">〜 ¥1,000</a>
-                <a href="{{ url_for('shop.index', price='3000') }}" class="filter-item">¥1,001 〜 ¥3,000</a>
-                <a href="{{ url_for('shop.index', price='3001') }}" class="filter-item">¥3,001 〜</a>
-            </div>
-        </aside>
+<!-- 全商品 -->
+<div class="section">
+  <h2 class="section-title">全商品</h2>
+  <div class="container">
+    {% for item in all_items %} 
+        {% include "shop/component/product-card.html" %}
+    {% endfor %}
+  </div>
+</div>
 
-        <main>
-            <div class="section-header">
-                <h2>すべての商品 <span style="font-size: 0.8rem; color: #9ca3af;">{{ products|length }} 点の商品</span></h2>
-            </div>
 
-            <div class="product-grid">
-                {% if products %}
-                    {% for p in products %}
-                    <div class="product-card">
-                        <div class="img-container">
-                            <a href="{{ url_for('shop.detail', id=p.id) }}">
-                                <img src="{{ p.image }}" alt="{{ p.name }}" onerror="this.src='https://via.placeholder.com/600x400?text=No+Image';">
-                            </a>
-                        </div>
 
-                        <div class="card-content">
-                            <h3 class="p-name">{{ p.name }}</h3>
-                            <p class="p-price">¥{{ "{:,}".format(p.price) }}</p>
-                            <button class="btn-add">🛒 カートへ</button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div style="padding: 40px; text-align: center; color: #6b7280; background: white; border-radius: 12px;">
-                        <p>該当する商品がありません。</p>
-                        <a href="{{ url_for('shop.index') }}" style="color: var(--accent-green);">すべての商品を表示する</a>
-                    </div>
-                {% endif %}
-            </div>
-        </main>
-    </div>
+
 
 <style>
-        :root {
-            --bg-gray: #f3f4f6;
-            --accent-green: #10b981;
-            --text-main: #1f2937;
-            --white: #ffffff;
-            --border: #e5e7eb;
-        }
+/* 共通セクション */
+.section {
+  margin-bottom: 40px;
+}
 
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-            background-color: var(--bg-gray);
-            color: var(--text-main);
-            margin: 0;
-            line-height: 1.6;
-        }
+/* 共通タイトル */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 24px 0 16px 0; /* 上:24px / 下:16px */
+}
 
-       
+/* おすすめ商品コンテナ */
+.container_reco {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 40px 20px;
+  width: 90%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #b5a28a;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 30px;
-            padding: 30px 20px;
-        }
+/* 全商品コンテナ */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 40px 20px;
+  width: 90%;
+  margin: 0 auto;
+   background-color:rgb(255, 255, 255));
+  border-radius: 16px;
+}
 
-        aside {
-            width: 220px;
-            flex-shrink: 0;
-        }
+/* カード共通 */
+.card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #d1d5db;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
-        .sidebar-group {
-            margin-bottom: 25px;
-        }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
 
-        .sidebar-title {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #6b7280;
-            margin-bottom: 10px;
-        }
+.card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid #d1d5db;
+}
 
-        /* リンクのデザインをボタン風に固定 */
-        .filter-item {
-            display: block;
-            text-decoration: none;
-            background: var(--white);
-            color: var(--text-main);
-            padding: 10px 15px;
-            margin-bottom: 6px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
+.card-body {
+  padding: 16px;
+  box-sizing: border-box;
+}
 
-        .filter-item:hover {
-            background: #e5e7eb;
-            transform: translateX(3px);
-        }
+.name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
 
-        /* 選択中のスタイル（今は手動ですが、後ほど自動化も可能です） */
-        .filter-item.active {
-            background: var(--accent-green);
-            color: white;
-            font-weight: bold;
-        }
+.price {
+  font-weight: bold;
+  color: #10b981;
+  font-size: 1rem;
+}
 
-        main {
-            flex-grow: 1;
-        }
-
-        .section-header {
-            margin-bottom: 20px;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .product-card {
-            background: var(--white);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .img-container {
-            width: 100%;
-            height: 180px;
-            background: #eee;
-        }
-
-        .img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 15px;
-        }
-
-        .p-name {
-            font-weight: bold;
-            font-size: 1rem;
-            margin: 0 0 8px 0;
-        }
-
-        .p-price {
-            color: var(--accent-green);
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .btn-add {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--accent-green);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn-add:hover {
-            opacity: 0.8;
-        }
-
-    </style>
-
+.btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #10b981;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+</style>
 {% endblock %}

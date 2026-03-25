@@ -22,7 +22,7 @@
     {% for item in items %}
     <tr class="{% if item.delFlg %}deleted{% endif %}">
       <td>
-        <strong>{{ item.itemName }}</strong><br>
+        <strong>{{ item.itemName[:20] }}</strong><br> <!--20文字まで-->
         <small>
           {{ item.itemDetail[:50] }}
           {% if item.itemDetail|length > 50 %}...{% endif %}
