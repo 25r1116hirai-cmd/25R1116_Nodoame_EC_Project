@@ -5,37 +5,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple EC Store - 商品一覧</title>
-    
-</head>
-<body>
+    <title>Simple EC Store</title>
+    <style>
+        :root {
+            --accent-green: #25c992;
+            --text-main: #1f2937;
+            --text-gray: #6b7280;
+            --bg-light: #F3F4F6;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --header-height: 70px;
+        }
 
-    <header>
-        <div class="logo-area">🏠 Simple EC Store</div>
-        <div class="search-bar"><input type="text" placeholder="キーワードで探す"></div>
-        <div class="nav-links">
-            <a href="{{ url_for('shop.index') }}" class="nav-item active">商品一覧</a>
-            <a href="#" class="nav-item">注文状況</a>
-            <a href="{{ url_for('ec003view.index') }}" class="nav-item">カート</a>
-        </div>
-    </header>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.6;
+        }
 
-
-    {% block  content%}
-    
-
-    {% endblock  %}
-
-
-</body>
-
-</html>
-
-<style>
-
-         header {
+        header {
             background: var(--white);
-            padding: 10px 5%;
+            height: var(--header-height);
+            padding: 0 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -43,6 +36,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .logo-area {
@@ -50,47 +44,81 @@
             align-items: center;
             gap: 10px;
             font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .search-bar input {
-            padding: 8px 20px;
-            width: 350px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: #f9fafb;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            text-decoration: none;
         }
 
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 15px;
         }
 
         .nav-item {
             text-decoration: none;
-            color: var(--text-main);
-            padding: 8px 16px;
-            border: 1px solid var(--border);
+            color: var(--text-gray);
+            padding: 8px 18px;
+            border: 1px solid transparent;
             border-radius: 8px;
-            font-size: 0.9rem;
-            transition: 0.2s;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
 
+        /* アクティブなページのスタイル */
         .nav-item.active {
-            border: 2px solid #000;
+            color: var(--text-main);
+            border: 2px solid var(--text-main);
             font-weight: bold;
         }
 
-        .nav-item:hover {
-            background: #f9fafb;
-        }
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-            background-color:#F3F4F6;
+        .nav-item:hover:not(.active) {
+            background: #f3f4f6;
             color: var(--text-main);
-            margin: 0;
-            line-height: 1.6;
         }
 
+        /* カートボタンだけ少し強調 */
+        .nav-item-cart {
+            background: var(--accent-green);
+            color: white !important;
+            border: none;
+        }
 
+        .nav-item-cart:hover {
+            opacity: 0.9;
+        }
+
+        /* コンテンツエリアの余白 */
+        main {
+            padding-bottom: 50px;
+        }
     </style>
+</head>
+<body>
+
+    <header>
+        <a href="{{ url_for('shop.index') }}" class="logo-area">
+            🏠 Simple EC Store
+        </a>
+        
+        <div class="nav-links">
+            <a href="{{ url_for('shop.index') }}" 
+               class="nav-item {{ 'active' if request.endpoint == 'shop.index' else '' }}">
+                商品一覧
+            </a>
+            <a href="#" class="nav-item">注文状況</a>
+            <a href="{{ url_for('ec003view.index') }}" 
+               class="nav-item nav-item-cart {{ 'active' if request.endpoint == 'ec003view.index' else '' }}">
+                🛒 カート
+            </a>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {# 各ページのコンテンツがここに表示されます #}
+        {% endblock %}
+    </main>
+
+</body>
+</html>
