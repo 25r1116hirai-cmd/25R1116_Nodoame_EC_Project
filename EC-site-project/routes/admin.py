@@ -1,12 +1,13 @@
 from datetime import datetime
 import os
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
-from flask_login import login_required, login_user
+from flask_login import login_required, login_user,current_user
 from routes.form import ItemForm
 import uuid
 #DBのテーブルとDB操作のファイルをインポート
 from app.model.itemM import ItemM
 from app.model.userM import UserM
+from app.model.orderH import OrderH
 from app.extensions import db
 
 
@@ -67,16 +68,23 @@ orders = [
 @admin.route("/orders")
 @login_required
 def order():
+    # 管理者権限チェック
+    if current_user.role != 1:
+        flash("管理者専用ページです", "danger")
+        return redirect(url_for("shop.index"))
+
     sort = request.args.get("sort")
 
+    # DBから注文取得
+    display_orders = OrderH.query.all()
+
+    # 並び替え
     if sort == "true":
-        # 並び替えあり
-        display_orders = sorted(orders, key=lambda x: (x["shipped"], x["id"]))
-    else:
-        # 並び替えなし（元の順番）
-        display_orders = orders
+        display_orders = sorted(display_orders, key=lambda x: (x.shipFlg, x.orderId))
 
     return render_template("admin/orders.html", orders=display_orders)
+
+
 # 注文管理画面内にて発送状況を切り替えるロジック
 @admin.route("/toggle/<int:order_id>", methods=["POST"])
 def toggle_status(order_id):

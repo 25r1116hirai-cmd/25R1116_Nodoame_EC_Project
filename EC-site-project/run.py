@@ -54,14 +54,22 @@ with app.app_context():
         user = UserM(
             userID="admin",
             userName="管理者",
-            role=1,
+            role=1,  # 1 = 管理者
             delFlg=False
         )
         user.set_password("admin123")
-
         db.session.add(user)
-        db.session.commit()
-        print("テストユーザー作成OK")
+
+    # 一般ユーザー
+    if not UserM.query.filter_by(userID="user01").first():
+        user = UserM(
+            userID="user01",
+            userName="一般ユーザー",
+            role=0,  # 0 = 一般
+            delFlg=False
+        )
+        user.set_password("user123")
+        db.session.add(user)
 
 if __name__ == "__main__":
     app.run(debug=True,port=5001)
