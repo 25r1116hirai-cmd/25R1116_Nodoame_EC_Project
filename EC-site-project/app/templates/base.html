@@ -36,7 +36,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .logo-area {
@@ -54,34 +54,37 @@
             gap: 15px;
         }
 
+        /* ナビゲーション全体のスタイル */
         .nav-item {
             text-decoration: none;
-            color: var(--text-gray);
-            padding: 8px 18px;
-            border: 1px solid transparent;
-            border-radius: 8px;
+            color: #5c5470;
+            /* 柔らかい文字色 */
+            padding: 10px 20px;
+            border-radius: 12px;
+            /* カートボタンに合わせた角丸 */
             font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        /* アクティブなページのスタイル */
-        .nav-item.active {
-            color: var(--text-main);
-            border: 2px solid var(--text-main);
             font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .nav-item:hover:not(.active) {
-            background: #f3f4f6;
-            color: var(--text-main);
-        }
-
-        /* カートボタンだけ少し強調 */
-        .nav-item-cart {
-            background: var(--accent-green);
+        /* 「商品一覧」をカートと同じ青色のデザインにする */
+        .nav-item.active,
+        .nav-item:hover {
+            background-color: #1d11cc;
+            /* カートと同じ鮮やかな青色 */
             color: white !important;
-            border: none;
+            /* 文字は白抜き */
+            box-shadow: 0 4px 12px rgba(46, 196, 182, 0.3);
+            /* ぷっくり見える影 */
+        }
+
+        /* カートボタン専用（常に青色にする場合） */
+        .nav-item-cart {
+            background-color: #1d11cc;
+            color: white !important;
         }
 
         .nav-item-cart:hover {
@@ -94,21 +97,22 @@
         }
     </style>
 </head>
+
 <body>
 
     <header>
         <a href="{{ url_for('shop.index') }}" class="logo-area">
             🏠 Simple EC Store
         </a>
-        
+
         <div class="nav-links">
-            <a href="{{ url_for('shop.index') }}" 
-               class="nav-item {{ 'active' if request.endpoint == 'shop.index' else '' }}">
+            <a href="{{ url_for('shop.index') }}"
+                class="nav-item {{ 'active' if request.endpoint == 'shop.index' else '' }}">
                 商品一覧
             </a>
             <a href="#" class="nav-item">注文状況</a>
-            <a href="{{ url_for('ec003view.index') }}" 
-               class="nav-item nav-item-cart {{ 'active' if request.endpoint == 'ec003view.index' else '' }}">
+            <a href="{{ url_for('ec003view.index') }}"
+                class="nav-item nav-item-cart {{ 'active' if request.endpoint == 'ec003view.index' else '' }}">
                 🛒 カート
             </a>
         </div>
@@ -121,4 +125,5 @@
     </main>
 
 </body>
+
 </html>
