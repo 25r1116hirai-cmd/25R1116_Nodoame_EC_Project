@@ -1,8 +1,8 @@
-"""クレジットカードのカラムを削除し、電話番号のカラムを追加
+"""empty message
 
-Revision ID: c3377e1a8656
+Revision ID: aa326870f5ea
 Revises: 
-Create Date: 2026-03-26 14:36:47.010256
+Create Date: 2026-03-26 15:06:28.059352
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c3377e1a8656'
+revision = 'aa326870f5ea'
 down_revision = None
 branch_labels = None
 depends_on = None

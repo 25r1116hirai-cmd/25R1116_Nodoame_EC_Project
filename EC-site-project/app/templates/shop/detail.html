@@ -7,18 +7,17 @@
     <div class="product-flex">
         <div class="product-image-container">
             {# 画像が表示されない対策：onerrorを追加し、パスを柔軟に設定 #}
-            <img src="{{ url_for('static', filename='img/' ~ product.imageName) }}" 
-                 alt="{{ product.itemName }}"
-                 onerror="this.src='https://via.placeholder.com/600x400?text=No+Image';">
+            <img src="{{ url_for('static', filename='img/' ~ product.imageName) }}" alt="{{ product.itemName }}"
+                onerror="this.src='https://via.placeholder.com/600x400?text=No+Image';">
         </div>
 
         <div class="product-info">
             {% if product.is_featured %}
-                <span class="badge">おすすめ商品</span>
+            <span class="badge">おすすめ商品</span>
             {% endif %}
-            
+
             <h1 class="product-title">{{ product.itemName }}</h1>
-            
+
             <div class="product-price">¥{{ "{:,}".format(product.price) }}</div>
 
             {# --- ここが赤枠の部分：商品詳細 (itemDetail) を追加 --- #}
@@ -34,20 +33,19 @@
                 {% include "shop/component/cart-controls.html" %}
             </div>
 
-            <button type="button" class="add-to-cart-btn" onclick="addToCart('{{ product.id }}')">
-                🛒 カートに追加する
-            </button>
-
+            <a href="{{ url_for('checkout.add_to_cart', item_id=product.itemId) }}" class="btn cart-btn">
+                <i class="fas fa-cart-plus"></i> カートに入れる
+            </a>
             <script>
-            function addToCart(itemId) {
-                fetch(`/add_to_cart/${itemId}`, {
-                    method: 'POST',
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message); // 「カートに追加しました」と出す
-                });
-            }
+                function addToCart(itemId) {
+                    fetch(`/add_to_cart/${itemId}`, {
+                        method: 'POST',
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message); // 「カートに追加しました」と出す
+                        });
+                }
             </script>
 
         </div>
@@ -59,145 +57,200 @@
 </footer>
 
 <style>
-:root {
-    --accent-green: #10b981;
-    --bg-light: #f9fafb;
-    --text-gray: #6b7280;
-    --text-main: #1f2937;
-    --border-color: #e5e7eb;
-}
-
-body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #ffffff;
-    margin: 0;
-    color: var(--text-main);
-}
-
-.main-container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-.back-link {
-    display: inline-block;
-    text-decoration: none;
-    color: var(--text-gray);
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    padding: 5px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    transition: background 0.2s;
-}
-
-.back-link:hover {
-    background: var(--bg-light);
-}
-
-.product-flex {
-    display: flex;
-    gap: 50px;
-    align-items: flex-start;
-}
-
-.product-image-container {
-    flex: 1.2;
-}
-
-.product-image-container img {
-    width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    object-fit: cover;
-}
-
-.product-info {
-    flex: 1;
-}
-
-.badge {
-    background: #ecfdf5;
-    color: var(--accent-green);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    display: inline-block;
-    margin-bottom: 15px;
-}
-
-.product-title {
-    font-size: 2.2rem;
-    margin: 0 0 10px 0;
-}
-
-.product-price {
-    font-size: 1.8rem;
-    color: var(--accent-green);
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-/* 追加した詳細テキストのスタイル */
-.product-detail-text {
-    font-size: 1rem;
-    color: var(--text-main);
-    line-height: 1.6;
-    margin-bottom: 20px;
-    
-}
-
-.product-description {
-    color: var(--text-gray);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    border-top: 1px solid var(--border-color);
-    padding-top: 20px;
-}
-
-.controls-wrapper {
-    margin-bottom: 20px;
-}
-
-.add-to-cart-btn {
-    width: 100%;
-    background: var(--accent-green);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 15px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: opacity 0.2s;
-}
-
-.add-to-cart-btn:hover {
-    opacity: 0.9;
-}
-
-footer {
-    margin-top: 100px;
-    text-align: center;
-    padding: 30px;
-    color: var(--text-gray);
-    font-size: 0.8rem;
-    border-top: 1px solid var(--border-color);
-}
-
-/* スマホ対応（レスポンシブ） */
-@media (max-width: 768px) {
-    .product-flex {
-        flex-direction: column;
+    :root {
+        --accent-green: #10b981;
+        --bg-light: #f9fafb;
+        --text-gray: #6b7280;
+        --text-main: #1f2937;
+        --border-color: #e5e7eb;
     }
-}
+
+    body {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        background-color: #ffffff;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    .main-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .back-link {
+        display: inline-block;
+        text-decoration: none;
+        color: var(--text-gray);
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        padding: 5px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        transition: background 0.2s;
+    }
+
+    .back-link:hover {
+        background: var(--bg-light);
+    }
+
+    .product-flex {
+        display: flex;
+        gap: 50px;
+        align-items: flex-start;
+    }
+
+    .product-image-container {
+        flex: 1.2;
+    }
+
+    .product-image-container img {
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        object-fit: cover;
+    }
+
+    .product-info {
+        flex: 1;
+    }
+
+    .badge {
+        background: #ecfdf5;
+        color: var(--accent-green);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .product-title {
+        font-size: 2.2rem;
+        margin: 0 0 10px 0;
+    }
+
+    .product-price {
+        font-size: 1.8rem;
+        color: var(--accent-green);
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    /* 追加した詳細テキストのスタイル */
+    .product-detail-text {
+        font-size: 1rem;
+        color: var(--text-main);
+        line-height: 1.6;
+        margin-bottom: 20px;
+
+    }
+
+    .product-description {
+        color: var(--text-gray);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 20px;
+    }
+
+    .controls-wrapper {
+        margin-bottom: 20px;
+    }
+
+    .add-to-cart-btn {
+        width: 100%;
+        background: var(--accent-green);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 15px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: opacity 0.2s;
+    }
+
+    .add-to-cart-btn:hover {
+        opacity: 0.9;
+    }
+
+    footer {
+        margin-top: 100px;
+        text-align: center;
+        padding: 30px;
+        color: var(--text-gray);
+        font-size: 0.8rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* スマホ対応（レスポンシブ） */
+    @media (max-width: 768px) {
+        .product-flex {
+            flex-direction: column;
+        }
+    }
+
+    /* CSS (static/css/style.css などの最後に追加) */
+
+    /* ボタンの共通スタイル */
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        /* 丸みをつける */
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* 影をつけて立体感を出す */
+    }
+
+    /* カートに入れるボタンのスタイル（緑色ベース） */
+    .cart-btn {
+        background-color: #2ecc71;
+        /* 明るい緑色 */
+        border: 2px solid #2ecc71;
+        margin-top: 20px;
+        width: 100%;
+        /* 横幅いっぱいにする（お好みで） */
+        box-sizing: border-box;
+        /* paddingを含めたサイズにする */
+    }
+
+    /* ホバー（マウスを乗せた時）のエフェクト */
+    .cart-btn:hover {
+        background-color: #27ae60;
+        /* 少し濃い緑色に */
+        transform: translateY(-2px);
+        /* 少し上に浮かせる */
+        text-decoration: none;
+        /* 下線を消す */
+    }
+
+    /* クリックした時のエフェクト */
+    .cart-btn:active {
+        transform: translateY(1px);
+        /* 少し沈ませる */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* アイコンのスタイル（アイコンを追加した場合） */
+    .cart-btn i {
+        margin-right: 8px;
+        /* 文字との間にスペースを空ける */
+    }
 </style>
 
 {% endblock %}
