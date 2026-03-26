@@ -31,34 +31,6 @@ def login():
     return render_template("admin/login.html")
 
 
-# 注文情報の仮データ
-# データベースができたら削除します
-orders = [
-    {
-        "id": 1001,
-        "name": "佐藤 太郎",
-        "address": "東京都新宿区...",
-        "items": "商品A×2, 商品B×1",
-        "total": 5500,
-        "shipped": False
-    },
-    {
-        "id": 1002,
-        "name": "鈴木 花子",
-        "address": "大阪府大阪市...",
-        "items": "商品C×1",
-        "total": 3000,
-        "shipped": False
-    },
-    {
-        "id": 1003,
-        "name": "田中 一郎",
-        "address": "北海道札幌市...",
-        "items": "商品B×3, 商品D×1",
-        "total": 7800,
-        "shipped": False
-    }
-]
 
 # ----------------------------------------------------
 # 注文管理画面
@@ -77,7 +49,7 @@ def order():
 
     # DBから注文ヘッダを取得
     orders = OrderH.query.order_by(OrderH.orderDate.desc()).all()
-
+    print(orders)
     # 明細をセット
     display_orders = []
     for o in orders:
@@ -91,19 +63,23 @@ def order():
             for d in o.order_details  # OrderH にリレーションを張っている場合
         ]
         display_orders.append({
-            "orderId": o.orderId,
-            "userName": o.userName,
-            "orderAddress": o.orderAddress,
-            "items": items,
-            "total": o.total,
-            "shipFlg": o.shipFlg
-        })
+    "orderId": o.orderId,
+    "userName": o.userName,
+    "orderAddress": o.orderAddress,
+    "order_items": items,  # ← ここ変更！！
+    "total": o.total,
+    "shipFlg": o.shipFlg
+})
 
     # 並び替え
     if sort == "true":
         display_orders = sorted(display_orders, key=lambda x: (x["shipFlg"], x["orderId"]))
 
-    return render_template("admin/orders.html", orders=display_orders)
+    for o in orders:
+        for d in o.order_details:
+            print(d.itemId)
+
+    return render_template("admin/orders.html", orders=display_orders,test=orders)
 
 
 # 注文管理画面内にて発送状況を切り替えるロジック

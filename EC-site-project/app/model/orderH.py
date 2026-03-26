@@ -41,5 +41,6 @@ class OrderH(db.Model):
             "delFlg": bool(self.delFlg),
             "updDate": self.updDate.strftime('%Y/%m/%d %H:%M:%S') if self.updDate else None,
             "insDate": self.insDate.strftime('%Y/%m/%d %H:%M:%S') if self.insDate else None,
-            "details": [d.getData() for d in self.details]  # 子明細も含める
+            "details": [d.getData() for d in self.order_details]  # 子明細も含める
+            
         }

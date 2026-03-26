@@ -2,6 +2,7 @@
 {% block content %}
 
 <h1>注文管理画面</h1>
+
 <form method="GET" action="{{ url_for('admin.order') }}">
     <input type="hidden" name="sort" value="true">
     <button type="submit">🔄 更新</button>
@@ -19,22 +20,31 @@
 
     {% for order in orders %}
     <tr>
-        <td>{{ order.id }}</td>
-        <td>{{ order.name }}</td>
-        <td>{{ order.address }}</td>
-        <td>{{ order.items }}</td>
-        <td>¥{{ order.total }}</td>
+        <td>{{ order.orderId }}</td>
+        <td>{{ order.userName }}</td>
+        <td>{{ order.orderAddress }}</td>
+
+        <!-- ✅ 注文内容 -->
         <td>
-            <form method="POST" action="{{ url_for('admin.toggle_status', order_id=order.id) }}">
-                {% if order.shipped %}
-                    <button class="btn shipped">発送済み</button>
-                {% else %}
-                    <button class="btn not-shipped">未配送</button>
-                {% endif %}
-            </form>
+            {% for item in order.order_items %}
+                {{ item.itemName }} × {{ item.amount }}<br>
+            {% endfor %}
+        </td>
+
+        <!-- ✅ 合計金額 -->
+        <td>{{ order.total }}円</td>
+
+        <!-- ✅ 配送状況 -->
+        <td>
+            {% if order.shipFlg %}
+                発送済み
+            {% else %}
+                未発送
+            {% endif %}
         </td>
     </tr>
     {% endfor %}
+
 </table>
 
 <style>
@@ -43,45 +53,23 @@ body {
     margin: 40px;
 }
 
-/* 「注文管理画面」の文字サイズ */
 h1 {
     margin-bottom: 20px;
 }
-/* テーブル全体の横幅は最大に */
-/* border-collapse: collapse;でセル同士の枠線をくっつける */
+
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
-/* 注文ID,名前,配送先,注文内容,合計金額,配送状況の欄の枠線 */
-th,td {
+th, td {
     border: 1px solid #ccc;
     padding: 10px;
 }
-/* 注文ID,名前,配送先,注文内容,合計金額,配送状況の欄の背景の色 */
+
 th {
     background-color: #f0f0f0;
 }
-
-/* 発送済み,未発送ボタンの装飾 */
-.btn {
-    padding: 6px 12px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-}
-/* 発送済み状態のボタンの色 */
-.shipped {
-    background-color: green;
-    color: white;
-}
-
-/* 未発送状態のボタンの色 */
-.not-shipped {
-    background-color: blue;
-    color: white;
-}
-
 </style>
-{% endblock  %}
+
+{% endblock %}
