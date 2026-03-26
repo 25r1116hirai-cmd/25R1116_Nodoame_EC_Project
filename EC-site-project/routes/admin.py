@@ -67,7 +67,7 @@ orders = [
 ## 更新ボタンを押すと発送済みは下に、未発送は上に並び替えるロジック追加
 # 注文管理画面
 @admin.route("/orders")
-@login_required
+# @login_required
 def order():
     if current_user.role != 1:
         flash("管理者専用ページです", "danger")
@@ -139,7 +139,7 @@ def list_items():
 # 商品新規登録画面(product.htmlへ遷移)
 # 商品create
 @admin.route("/items/create", methods=["GET", "POST"])
-@login_required
+# @login_required
 def product():
     form = ItemForm()
 

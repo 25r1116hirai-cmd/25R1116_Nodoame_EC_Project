@@ -1,12 +1,11 @@
 from app.extensions import db
 from sqlalchemy import func
-from sqlalchemy.orm import relationship
 
 class OrderD(db.Model):
     __tablename__ = "orderD"
     orderId = db.Column(db.String(10), db.ForeignKey('orderH.orderId',name='fk_orderD_orderH'), primary_key=True)    # 発注ID 複合キー
     lineNo = db.Column(db.Integer,primary_key=True)         # 行番号 複合キー
-    itemId = db.Column(db.String(10))                      # 商品ID
+    itemId = db.Column(db.Integer, db.ForeignKey('itemM.itemId'))                      # 商品ID
     amount = db.Column(db.Integer, default=0)               # 数量
     price = db.Column(db.Float, default=0)                  # 単価（税抜き）
     tax = db.Column(db.Float, default=0)                    # 消費税
@@ -14,9 +13,8 @@ class OrderD(db.Model):
     updDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 更新日付
     insDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 登録日付
 
-    # リレーションの設定(子供を指定)
-    order_h = relationship("OrderH", back_populates="details")
-
+    order = db.relationship("OrderH", back_populates="order_details")  # OrderD は1つの OrderH に属する
+    item = db.relationship("ItemM", backref="order_details") #13:25ここを追加
     # # 辞書型で取得
     # def getData(self):
     #     return{

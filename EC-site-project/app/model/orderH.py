@@ -1,6 +1,5 @@
 from app.extensions import db
 from sqlalchemy import func
-from sqlalchemy.orm import relationship
 
 class OrderH(db.Model):
     __tablename__ = "orderH"
@@ -18,10 +17,15 @@ class OrderH(db.Model):
     updDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 更新日付
     insDate = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())  # 登録日付
 
-    # リレーションの設定(子供を指定)
-    # 子モデルとのリレーション
-    order_details = relationship("OrderD", back_populates="header", cascade="all, delete-orphan")
-
+    # リレーション：1つの注文に複数の明細(OrderD)がある
+    order_details = db.relationship(
+        "OrderD",
+        back_populates="order",
+        cascade="all, delete-orphan"
+        )  
+    
+    
+    
     # 辞書型で取得
     def getData(self):
         return{
