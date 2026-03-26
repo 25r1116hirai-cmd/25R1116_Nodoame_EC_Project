@@ -8,6 +8,7 @@ from routes.admin import admin
 #from app.model.userM import UserM
 from routes.ec003view import ec003view  # 3/24 add kurata
 from routes.auth import auth
+from routes.test import test
 
 
 # app __init__を設置することで、extension.py(SQL alchemyをインスタンス化)
@@ -44,6 +45,7 @@ app.register_blueprint(checkout, url_prefix="/checkout")
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(ec003view, url_prefix="/ec003view")  # 3/24 add kurata
 app.register_blueprint(auth, url_prefix="/auth")
+app.register_blueprint(test, url_prefix="/test")
 
 @app.route("/")
 def index():
@@ -78,3 +80,4 @@ if __name__ == "__main__":
 
 
   #DBのクレジットカードのカラムを削除、電話番号のカラムを追加するため、ロールバックのポイント
+  
