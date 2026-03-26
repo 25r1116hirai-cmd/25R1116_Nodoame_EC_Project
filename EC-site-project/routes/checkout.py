@@ -109,8 +109,7 @@ def complete():
 
     userName = request.form.get("userName")
     orderAddress = request.form.get("orderAddress")
-    tel = request.form.get("tel")
-    cardNum = request.form.get("cardNum")
+    phone = request.form.get("phone")
 
     order_id = datetime.now().strftime("%Y%m%d%H%M%S")
     subtotal = sum(item['price'] * item['amount'] for item in cart)
@@ -124,7 +123,7 @@ def complete():
         orderDate=datetime.now().strftime("%Y-%m-%d"),
         userName=userName,
         orderAddress=orderAddress,
-        cardNum=cardNum,
+        phone=phone,
         shipFlg=False,
         price=subtotal,
         tax=tax,
