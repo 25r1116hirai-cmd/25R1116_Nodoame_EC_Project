@@ -1,1 +1,10 @@
 {# 決済 #}
+<!-- app/templates/checkout/payment.html -->
+<h2>レジ</h2>
+<form method="POST" action="{{ url_for('checkout.complete') }}">
+    <label>名前: <input type="text" name="userName" required value="{{ current_user.userName }}"></label><br>
+    <label>住所: <input type="text" name="orderAddress" required></label><br>
+    <label>電話番号: <input type="text" name="tel" required></label><br>
+    <label>クレジットカード番号: <input type="text" name="cardNum" required></label><br>
+    <button type="submit">注文を確定する</button>
+</form>

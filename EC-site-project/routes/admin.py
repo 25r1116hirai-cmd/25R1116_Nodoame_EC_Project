@@ -1,12 +1,13 @@
 from datetime import datetime
 import os
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
-from flask_login import login_required, login_user
+from flask_login import login_required, login_user,current_user
 from routes.form import ItemForm
 import uuid
 #DBのテーブルとDB操作のファイルをインポート
 from app.model.itemM import ItemM
 from app.model.userM import UserM
+from app.model.orderH import OrderH
 from app.extensions import db
 
 
@@ -64,26 +65,58 @@ orders = [
 # ----------------------------------------------------
 # 注文管理画面(orders.htmlへ遷移)
 ## 更新ボタンを押すと発送済みは下に、未発送は上に並び替えるロジック追加
+# 注文管理画面
 @admin.route("/orders")
 @login_required
 def order():
+    if current_user.role != 1:
+        flash("管理者専用ページです", "danger")
+        return redirect(url_for("shop.index"))
+
     sort = request.args.get("sort")
 
+    # DBから注文ヘッダを取得
+    orders = OrderH.query.order_by(OrderH.orderDate.desc()).all()
+
+    # 明細をセット
+    display_orders = []
+    for o in orders:
+        items = [
+            {
+                "itemName": d.item.itemName,  # ItemM とリレーションがある場合
+                "amount": d.amount,
+                "price": d.price,
+                "tax": d.tax
+            }
+            for d in o.order_details  # OrderH にリレーションを張っている場合
+        ]
+        display_orders.append({
+            "orderId": o.orderId,
+            "userName": o.userName,
+            "orderAddress": o.orderAddress,
+            "items": items,
+            "total": o.total,
+            "shipFlg": o.shipFlg
+        })
+
+    # 並び替え
     if sort == "true":
-        # 並び替えあり
-        display_orders = sorted(orders, key=lambda x: (x["shipped"], x["id"]))
-    else:
-        # 並び替えなし（元の順番）
-        display_orders = orders
+        display_orders = sorted(display_orders, key=lambda x: (x["shipFlg"], x["orderId"]))
 
     return render_template("admin/orders.html", orders=display_orders)
+
+
 # 注文管理画面内にて発送状況を切り替えるロジック
-@admin.route("/toggle/<int:order_id>", methods=["POST"])
+@admin.route("/toggle/<string:order_id>", methods=["POST"])
+@login_required
 def toggle_status(order_id):
-    for order in orders:
-        if order["id"] == order_id:
-            order["shipped"] = not order["shipped"]
-            break
+    if current_user.role != 1:
+        flash("管理者専用ページです", "danger")
+        return redirect(url_for("shop.index"))
+
+    order = OrderH.query.get_or_404(order_id)
+    order.shipFlg = not order.shipFlg
+    db.session.commit()
     return redirect(url_for("admin.order"))
 
 
@@ -209,15 +242,3 @@ def edit_item(item_id):
             flash(f"更新失敗: {e}", "danger")
 
     return render_template("admin/edit_item.html", item=item)
-
-
-
-
-
-
-
-
-
-
-
-

@@ -6,7 +6,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple EC Store</title>
-    <style>
+    
+</head>
+
+<body>
+
+    <header>
+        <a href="{{ url_for('shop.index') }}" class="logo-area">
+            🏠 Simple EC Store
+        </a>
+
+        <div class="nav-links">
+            <a href="{{ url_for('shop.index') }}"
+                class="nav-item {{ 'active' if request.endpoint == 'shop.index' else '' }}">
+                商品一覧
+            </a>
+            <a href="#" class="nav-item">注文状況</a>
+            <a href="{{ url_for('checkout.index') }}"
+                class="nav-item nav-item-cart {{ 'active' if request.endpoint == 'ec003view.index' else '' }}">
+                🛒 カート
+            </a>
+        </div>
+    </header>
+
+     <div class="main-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+
+</html>
+
+
+
+<style>
         :root {
             --accent-green: #25c992;
             --text-main: #1f2937;
@@ -95,35 +129,21 @@
         main {
             padding-bottom: 50px;
         }
+        .main-container {
+    max-width: 1200px;   /* 横広がりすぎ防止 */
+    margin: 0 auto;      /* 中央寄せ */
+    padding: 20px;       /* 左右余白 */
+}
+.section {
+    margin: 40px 0;
+}
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 16px;
+    padding-left: 8px;
+    border-left: 4px solid #1d11cc; /* ヘッダーの青と合わせる */
+}
+
+
     </style>
-</head>
-
-<body>
-
-    <header>
-        <a href="{{ url_for('shop.index') }}" class="logo-area">
-            🏠 Simple EC Store
-        </a>
-
-        <div class="nav-links">
-            <a href="{{ url_for('shop.index') }}"
-                class="nav-item {{ 'active' if request.endpoint == 'shop.index' else '' }}">
-                商品一覧
-            </a>
-            <a href="#" class="nav-item">注文状況</a>
-            <a href="{{ url_for('ec003view.index') }}"
-                class="nav-item nav-item-cart {{ 'active' if request.endpoint == 'ec003view.index' else '' }}">
-                🛒 カート
-            </a>
-        </div>
-    </header>
-
-    <main>
-        {% block content %}
-        {# 各ページのコンテンツがここに表示されます #}
-        {% endblock %}
-    </main>
-
-</body>
-
-</html>
