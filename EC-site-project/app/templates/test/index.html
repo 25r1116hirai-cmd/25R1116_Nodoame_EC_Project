@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データ管理パネル</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; line-height: 1.6; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; max-width: 500px; }
+        .btn { 
+            display: inline-block; padding: 10px 20px; 
+            color: #fff; text-decoration: none; border-radius: 4px; 
+            cursor: pointer; border: none; font-size: 16px;
+        }
+        .btn-export { background-color: #28a745; margin-bottom: 10px; }
+        .btn-import { background-color: #007bff; }
+        .section { margin-bottom: 30px; }
+        input[type="file"] { margin-bottom: 10px; display: block; }
+        .flash { color: #d9534f; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>システムデータ管理</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p class="flash">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <div class="section">
+            <h3>1. データのダウンロード (CSV)</h3>
+            <p>現在のDBデータをCSVファイルとして出力します。</p>
+            <a href="{{ url_for('test.export_users') }}" class="btn btn-export">DB書込 (CSV出力)</a>
+        </div>
+
+        <hr>
+
+        <div class="section">
+            <h3>2. データのアップロード (CSV)</h3>
+            <p>CSVファイルを選択してDBに登録します。</p>
+            <form action="{{ url_for('test.import_users') }}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".csv" required>
+                <button type="submit" class="btn btn-import">DB取込 (CSV登録)</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
