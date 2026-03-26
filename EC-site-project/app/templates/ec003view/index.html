@@ -1,66 +1,129 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>カート画面 - Simple EC Store</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header>
-        <div class="header-left">
-            <span class="icon">🏠</span> <strong>Simple EC Store</strong>
-        </div>
-        <nav>
-            <a href="#">商品一覧</a>
-            <a href="#">注文状況</a>
-            <a href="#" class="active">カート <span class="badge">{{ cart_items|length }}</span></a>
-        </nav>
-    </header>
+{# カート画面 #}
+{% extends "base.html" %}
+{% block content %}
+<main class="cart-main">
+    <h1>ショッピングカート</h1>
 
-    <main>
-        <h1>ショッピングカート</h1>
-        
-        <div class="cart-container">
-            <div class="cart-list">
-                {% for item in cart_items %}
-                <div class="cart-item">
-                    <img src="{{ url_for('static', filename='images/' + item.image_name) }}" alt="商品画像">
-                    <div class="item-info">
-                        <h3>{{ item.item_name }}</h3>
-                        <p>¥{{ "{:,}".format(item.price) }}</p>
+    <div class="cart-container">
+        <div class="cart-list">
+            {% if cart_items %}
+                <div class="order-group">
+                    {# --- ヘッダー：お客様名 --- #}
+                    <div class="order-info-header">
+                        <span class="user-name">お客様名: {{ order.userName }} 様</span>
                     </div>
-                    <div class="quantity-control">
-                        <button>-</button>
-                        <span>{{ item.amount }}</span>
-                        <button>+</button>
-                    </div>
-                    <div class="price-display">
-                        ¥{{ "{:,}".format(item.price * item.amount) }}
-                        <span class="delete-icon">🗑️</span>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
 
-            <aside class="order-summary">
-                <h3>注文内容</h3>
-                <div class="summary-row">
-                    <span>小計</span>
-                    <span>¥{{ "{:,}".format(subtotal) }}</span>
+                    {# --- 明細リスト --- #}
+                    <div class="detail-list">
+                        {% for line in cart_items %}
+                        <div class="detail-row">
+                            <div class="col-no">No: {{ line.lineNo }}</div>
+                            <div class="col-id">商品ID: {{ line.itemId }}</div>
+                            <div class="col-price">単価: ¥{{ "{:,}".format(line.price | int) }}</div>
+                            <div class="col-tax">税: ¥{{ "{:,}".format(line.tax | int) }}</div>
+                            <div class="col-amount">
+                                {# 数量変更リンクの修正（orderIdを削除） #}
+                                <a href="{{ url_for('ec003view.update_amount', lineNo=line.lineNo, delta='0', amount=line.amount) }}" class="btn-qty">-</a>
+                                <span>{{ line.amount }}</span>
+                                <a href="{{ url_for('ec003view.update_amount', lineNo=line.lineNo, delta='1', amount=line.amount) }}" class="btn-qty">+</a>
+                            </div>
+                            <div class="col-subtotal">小計: ¥{{ "{:,}".format((line.price | int + line.tax | int) * line.amount | int) }}</div>
+                            <div class="col-action">
+                                <a href="{{ url_for('ec003view.delete_item', lineNo=line.lineNo) }}" onclick="return confirm('削除しますか？')">
+                                    <span class="delete-icon">🗑️</span>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {# --- フッター：配送先・カード番号 --- #}
+                    <div class="order-address-info">
+                        <p><strong>【配送先情報】</strong></p>
+                        <p>ご住所: {{ order.orderAddress }}</p>
+                        <p>お支払カード: {{ order.cardNum }}</p>
+                    </div>
                 </div>
-                <div class="summary-row">
-                    <span>送料</span>
-                    <span>無料</span>
+            {% else %}
+                <div class="empty-cart">
+                    <p>カートに商品はありません。</p>
+                    <a href="{{ url_for('shop.index') }}">お買い物を続ける</a>
                 </div>
-                <hr>
-                <div class="total-row">
-                    <span>合計</span>
-                    <span class="total-price">¥{{ "{:,}".format(total) }}</span>
-                </div>
-                <button class="checkout-btn">レジへ進む →</button>
-                <a href="#" class="continue-shopping">買い物を続ける</a>
-            </aside>
+            {% endif %}
         </div>
-    </main>
-</body>
-</html>
+
+        {# --- 注文内容（サマリー） --- #}
+        <aside class="order-summary">
+            <h3>注文内容</h3>
+            <div class="summary-row"><span>小計（税抜）</span><span>¥{{ "{:,}".format(subtotal) }}</span></div>
+            <div class="summary-row"><span>消費税</span><span>¥{{ "{:,}".format(total_tax) }}</span></div>
+            <div class="summary-row"><span>送料</span><span>¥{{ "{:,}".format(shipping) }}</span></div>
+            <hr>
+            <div class="total-row"><span>合計</span><span class="total-price">¥{{ "{:,}".format(total) }}</span></div>
+            <button class="checkout-btn">レジへ進む →</button>
+        </aside>
+    </div>
+</main>
+
+<style>
+    /* 既存のスタイルを維持しつつ、レイアウト調整 */
+    .cart-container { display: flex; gap: 20px; align-items: flex-start; }
+    .cart-list { flex: 1; }
+    .order-summary { width: 300px; background: #fff; padding: 20px; border: 1px solid #eee; border-radius: 8px; position: sticky; top: 80px; }
+    
+    .order-group { background: #fff; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; }
+    .order-info-header { background: #f8f9fa; padding: 10px; border-radius: 5px; display: flex; gap: 20px; font-weight: bold; margin-bottom: 10px; }
+    
+    .detail-row { display: flex; align-items: center; padding: 12px 10px; border-bottom: 1px solid #eee; gap: 10px; font-size: 0.95rem; }
+    .col-no { width: 50px; }
+    .col-id { width: 100px; font-weight: bold; }
+    .col-price { width: 100px; text-align: right; }
+    .col-tax { width: 80px; text-align: right; color: #666; }
+    .col-amount { width: 70px; text-align: center; }
+    .col-subtotal { width: 120px; text-align: right; font-weight: bold; }
+    .col-action { width: 30px; text-align: center; }
+
+    .order-address-info { font-size: 0.9rem; color: #666; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; }
+    .empty-cart { text-align: center; padding: 50px; background: #fff; border-radius: 8px; border: 1px solid #eee; }
+    .summary-row, .total-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .total-price { font-size: 1.2rem; color: #e44d26; font-weight: bold; }
+    .checkout-btn { width: 100%; padding: 12px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+    /* 数量操作ボタンのスタイル */
+    /*
+    .amount-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .btn-qty {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        line-height: 22px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;
+        background: #f9f9f9;
+        font-weight: bold;
+    }
+    .btn-qty:hover {
+        background: #eee;
+    }
+    .qty-val {
+        min-width: 20px;
+        font-weight: bold;
+    }
+    */
+    /* 1の時にマイナスボタンを半透明にする */
+    /* 
+    .disabled-link {
+        opacity: 0.3;
+        cursor: not-allowed;
+        pointer-events: none; 
+    }
+    */
+</style>
+{% endblock %}
