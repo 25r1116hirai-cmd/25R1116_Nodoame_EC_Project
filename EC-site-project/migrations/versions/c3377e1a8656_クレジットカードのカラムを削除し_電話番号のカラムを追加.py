@@ -1,8 +1,8 @@
-"""empty message
+"""クレジットカードのカラムを削除し、電話番号のカラムを追加
 
-Revision ID: 2f0b1450d9fb
+Revision ID: c3377e1a8656
 Revises: 
-Create Date: 2026-03-26 12:29:50.399841
+Create Date: 2026-03-26 14:36:47.010256
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2f0b1450d9fb'
+revision = 'c3377e1a8656'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -50,7 +50,7 @@ def upgrade():
     sa.Column('orderDate', sa.String(length=10), nullable=True),
     sa.Column('userName', sa.String(length=50), nullable=True),
     sa.Column('orderAddress', sa.String(length=50), nullable=True),
-    sa.Column('cardNum', sa.String(length=50), nullable=True),
+    sa.Column('phone', sa.String(length=20), nullable=True),
     sa.Column('shipFlg', sa.Boolean(), nullable=True),
     sa.Column('price', sa.Float(), nullable=True),
     sa.Column('tax', sa.Float(), nullable=True),
@@ -74,13 +74,14 @@ def upgrade():
     op.create_table('orderD',
     sa.Column('orderId', sa.String(length=10), nullable=False),
     sa.Column('lineNo', sa.Integer(), nullable=False),
-    sa.Column('itemId', sa.String(length=10), nullable=True),
+    sa.Column('itemId', sa.Integer(), nullable=True),
     sa.Column('amount', sa.Integer(), nullable=True),
     sa.Column('price', sa.Float(), nullable=True),
     sa.Column('tax', sa.Float(), nullable=True),
     sa.Column('delFlg', sa.Boolean(), nullable=False),
     sa.Column('updDate', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('insDate', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.ForeignKeyConstraint(['itemId'], ['itemM.itemId'], ),
     sa.ForeignKeyConstraint(['orderId'], ['orderH.orderId'], name='fk_orderD_orderH'),
     sa.PrimaryKeyConstraint('orderId', 'lineNo')
     )

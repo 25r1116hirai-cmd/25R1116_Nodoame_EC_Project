@@ -7,7 +7,7 @@ class OrderH(db.Model):
     orderDate = db.Column(db.String(10))                    # 注文日付
     userName = db.Column(db.String(50))                     # お客様名
     orderAddress = db.Column(db.String(50))                 # お届け先住所
-    cardNum = db.Column(db.String(50))                      # クレジットカード番号
+    phone = db.Column(db.String(20))                        # 電話番号
     shipFlg = db.Column(db.Boolean, default=False)          # 発送フラグ
     price = db.Column(db.Float, default=0)                  # 小計（税別）
     tax = db.Column(db.Float, default=0)                    # 消費税
@@ -33,7 +33,6 @@ class OrderH(db.Model):
             "orderDate": str(self.orderDate),
             "userName": str(self.userName),
             "orderAddress": str(self.orderAddress),
-            "cardNum": str(self.cardNum),
             "shipFlg": bool(self.shipFlg),
             "price": float(self.price),
             "tax": float(self.tax),
