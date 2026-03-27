@@ -35,13 +35,15 @@
         <td>{{ order.total }}円</td>
 
         <!-- ✅ 配送状況 -->
-        <td>
+    <td>
+        <form action="{{ url_for('admin.toggle_status', order_id=order.orderId) }}" method="POST" style="display:inline;">
             {% if order.shipFlg %}
-                発送済み
+                <button type="submit">発送済み</button>
             {% else %}
-                未発送
+                <button type="submit">未発送</button>
             {% endif %}
-        </td>
+        </form>
+    </td>
     </tr>
     {% endfor %}
 

@@ -87,7 +87,6 @@ def order():
 @login_required
 def toggle_status(order_id):
     if current_user.role != 1:
-        flash("管理者専用ページです", "danger")
         return redirect(url_for("shop.index"))
 
     order = OrderH.query.get_or_404(order_id)
