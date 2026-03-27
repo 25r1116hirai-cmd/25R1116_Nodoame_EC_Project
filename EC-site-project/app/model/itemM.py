@@ -32,3 +32,6 @@ class ItemM(db.Model):
             "updDate": self.updDate.strftime('%Y/%m/%d %H:%M:%S') if self.updDate else None,
             "insDate": self.insDate.strftime('%Y/%m/%d %H:%M:%S') if self.insDate else None
         }
+
+    def price_with_tax(self):
+        return int(self.price * (1 + self.taxRate))

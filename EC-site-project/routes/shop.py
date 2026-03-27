@@ -13,6 +13,7 @@ def index():
     # 共通：論理削除は除く
     # すべて 
     all_items = ItemM.query.filter_by(delFlg=False).all()
+    
     # おすすめ、更新日で降順、上限3件分をすべて
     recommend_items = ItemM.query.filter_by(recmdFlg=True,delFlg=False).order_by(ItemM.updDate.desc()).limit(3).all()
     print(all_items)
