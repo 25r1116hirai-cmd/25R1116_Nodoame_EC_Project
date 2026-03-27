@@ -13,14 +13,18 @@ checkout = Blueprint("checkout", __name__)
 @checkout.route("/")
 def index():
     cart = session.get("cart", [])
-    subtotal = sum(item["price"] * item["amount"] for item in cart)
-    shipping = 800 if subtotal > 0 else 0
-    total = subtotal + shipping
-
+# 単価(price)を税込として扱う、またはここで計算する
+    # 今回は「単価×数量」の合計を「税抜小計」として、別途税を加算する方式で調整します
+    subtotal_ex_tax = sum(item["price"] * item["amount"] for item in cart)
+    tax = int(subtotal_ex_tax * 0.1)
+    subtotal_inc_tax = subtotal_ex_tax + tax # これが画面上の「税込小計」
+    
+    shipping = 800 if subtotal_inc_tax > 0 else 0
+    total = subtotal_inc_tax + shipping
     return render_template(
         "checkout/confirm.html",
         cart_items=cart,
-        subtotal=subtotal,
+        subtotal=subtotal_inc_tax,
         total=total,
         shipping=shipping
     )
