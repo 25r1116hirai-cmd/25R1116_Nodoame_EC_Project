@@ -121,7 +121,7 @@ def complete():
     tax = int(subtotal * 0.1)
     total = subtotal + shipping + tax
 
-    # ヘッダ保存
+    # 1. ヘッダ保存
     order_h = OrderH(
         orderId=order_id,
         orderDate=datetime.now().strftime("%Y-%m-%d"),
@@ -136,8 +136,24 @@ def complete():
     )
     db.session.add(order_h)
 
-    # 明細保存
+    # 2. 明細保存 ＋ 在庫減算
     for i, item in enumerate(cart, start=1):
+        # getメソッドで確実にDBから取得
+        product = ItemM.query.get(item["itemId"])
+        
+        if product:
+            print(f"DEBUG: 商品ID {product.itemId} の在庫を減らします: {product.stock} -> {product.stock - item['amount']}") # ターミナルで確認用
+            
+            # ✅ 在庫を直接計算して代入
+            product.stock = product.stock - item["amount"]
+            
+            # 在庫がマイナスにならないように
+            if product.stock < 0:
+                product.stock = 0
+            
+            # 変更をセッションに明示的に登録
+            db.session.add(product)
+
         order_d = OrderD(
             orderId=order_id,
             lineNo=i,
@@ -148,22 +164,15 @@ def complete():
         )
         db.session.add(order_d)
 
-    db.session.commit()
-    session.pop("cart", None)
-    flash("注文が完了しました！")
+    # 3. 確定（ここが一番重要！）
+    try:
+        db.session.commit()
+        print("DEBUG: データベースへの書き込みに成功しました")
+        session.pop("cart", None)
+        flash("注文完了！在庫を更新しました。")
+    except Exception as e:
+        db.session.rollback()
+        print(f"DEBUG ERROR: 書き込み失敗: {e}")
+        flash("エラーが発生しました。")
+
     return render_template("checkout/complete.html", order_id=order_id, total=total)
-
-
-@checkout.route("/payment", methods=["GET", "POST"])
-@login_required
-def payment():
-    cart = session.get("cart", [])
-    if not cart:
-        flash("カートに商品がありません")
-        return redirect(url_for("checkout.index"))
-
-    if request.method == "POST":
-        # フォームからPOSTされたらcompleteにリダイレクト
-        return redirect(url_for("checkout.complete"))
-
-    return render_template("checkout/payment.html", cart_items=cart)
