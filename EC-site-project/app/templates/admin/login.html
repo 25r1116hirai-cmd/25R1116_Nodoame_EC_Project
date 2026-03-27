@@ -6,7 +6,9 @@
     <h1 style="text-align: center; margin-bottom: 30px;">ログイン</h1>
 
     <!-- エラーメッセージ -->
-    {% with messages = get_flashed_messages() %}
+    <!-- これを活性化するとユーザー側からの　flashも持ち越されて表示してしまうので一旦コメントアウト -->
+
+    <!-- {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul style="color: red; list-style-type: none; padding: 0;">
         {% for message in messages %}
@@ -14,7 +16,7 @@
         {% endfor %}
         </ul>
       {% endif %}
-    {% endwith %}
+    {% endwith %} -->
 
     <!-- フォーム -->
     <form method="POST" action="{{ url_for('admin.login') }}">

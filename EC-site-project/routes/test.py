@@ -41,7 +41,7 @@ def export_users():
 def import_users():
     file = request.files.get('file')
     if not file or not file.filename.endswith('.csv'):
-        flash("CSVファイルを選択してください")
+        # flash("CSVファイルを選択してください")
         return redirect(url_for('test.index'))
 
     stream = io.StringIO(file.stream.read().decode("utf-8-sig"))

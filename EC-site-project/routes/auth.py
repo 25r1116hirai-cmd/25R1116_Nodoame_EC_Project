@@ -17,7 +17,7 @@ def login():
             login_user(user)
             next_page = request.args.get("next")
             return redirect(next_page or url_for("shop.index"))
-        flash("IDまたはパスワードが違います")
+        # flash("IDまたはパスワードが違います")
     return render_template("auth/login.html")
 
 
