@@ -59,7 +59,7 @@ def add_to_cart(item_id):
 
     session["cart"] = cart
     session.modified = True
-    flash(f"{item.itemName} をカートに追加しました")
+    # flash(f"{item.itemName} をカートに追加しました")
     return redirect(url_for("checkout.index"))
 
 
