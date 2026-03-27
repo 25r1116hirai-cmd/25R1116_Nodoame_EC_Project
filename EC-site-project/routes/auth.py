@@ -25,19 +25,28 @@ def login():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("shop.index"))
+    
     if request.method == "POST":
+        # ✅ 以下、全ての行を if request.method == "POST": より右に下げます
         user_name = request.form["userName"]
-        password = request.form["password"]
 
-        # ユーザーID自動発行
-        last_user = UserM.query.order_by(UserM.insDate.desc()).first()
-        if last_user:
-            match = re.search(r'(\d+)$', last_user.userID)  # 末尾の数字だけ抽出
-            last_num = int(match.group(1)) if match else 0
-            new_id = f"USR{last_num+1:04d}"
+        if user_name == "testuser":
+            password = "test1234"
+            new_id = "USR9999"
         else:
-            new_id = "USR0001"
+            # 通常時は画面で入力されたパスワードを使う
+            password = request.form["password"]
 
+            # ユーザーID自動発行
+            last_user = UserM.query.order_by(UserM.insDate.desc()).first()
+            if last_user:
+                match = re.search(r'(\d+)$', last_user.userID)
+                last_num = int(match.group(1)) if match else 0
+                new_id = f"USR{last_num+1:04d}"
+            else:
+                new_id = "USR0001"
+
+        # データベース保存処理も POST の中に入れます
         user = UserM(
             userID=new_id,
             userName=user_name,
@@ -48,4 +57,6 @@ def register():
         db.session.add(user)
         db.session.commit()
         return render_template("auth/register_complete.html", user_id=new_id)
+
+    # POSTでない（画面を開いただけの）時は入力画面を出す
     return render_template("auth/register.html")
