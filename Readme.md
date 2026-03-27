@@ -57,3 +57,6 @@ https://docs.google.com/spreadsheets/d/1FVz58k3Br4nScCivM6DLjgtna7jR7vrSRp3fJJoW
 
 DBへのリンク
 https://docs.google.com/spreadsheets/d/1JPQlYdfnaNP1Z4ZEjMhNV_3Ws4iIGt9qcQo2JIbLf28/edit?usp=sharing
+
+テスト仕様書 テスト結果へのリンク
+https://docs.google.com/spreadsheets/d/1CfAcZ2rC3W4w2lZo-Z8VwrI_Stryo0uMcseVlyBZQv4/edit?usp=sharing
