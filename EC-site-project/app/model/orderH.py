@@ -54,5 +54,5 @@ class OrderH(db.Model):
 
     @hybrid_property
     def total_including_shipping(self):
-        """送料込み合計"""
-        return self.subtotal_with_tax + self.shipping
+        """明細の税込み合計 + 送料"""
+        return sum(d.total_with_tax for d in self.order_details) + int(round(self.shipping))

@@ -13,8 +13,8 @@
         <th>注文ID</th>
         <th>名前</th>
         <th>配送先</th>
-        <th>注文内容</th>
-        <th>合計金額</th>
+        <th>注文内容（税込）</th>
+        <th>合計金額（税・送料800円込）</th>
         <th>配送状況</th>
     </tr>
 
@@ -26,14 +26,14 @@
 
         <!-- ✅ 注文内容 -->
         <td>
-            {% for item in order.order_items %}
-                {{ item.itemName }} × {{ item.amount }}<br>
+            {% for d in order.order_details %}
+        {{ d.item.itemName }} × {{ d.amount }} 個      ¥{{ "{:,}".format(d.total_with_tax) }}円<br>
             {% endfor %}
         </td>
 
         <!-- ✅ 合計金額 -->
-        <td>{{ order.total }}円</td>
-
+        <td>¥{{ "{:,}".format(order.total_including_shipping) }}</td>
+        
         <!-- ✅ 配送状況 -->
     <td>
         <form action="{{ url_for('admin.toggle_status', order_id=order.orderId) }}" method="POST" style="display:inline;">

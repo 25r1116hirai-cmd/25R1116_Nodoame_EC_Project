@@ -34,5 +34,6 @@ class OrderD(db.Model):
     #     }
     @hybrid_property
     def total_with_tax(self):
-        """1明細ごとの税込み合計（単価 * 数量 * 税）"""
-        return int(self.price * (1 + self.tax) * self.amount)
+   
+        tax_rate = self.item.taxRate if self.item else 0
+        return int(round(self.price * (1 + tax_rate) * self.amount))

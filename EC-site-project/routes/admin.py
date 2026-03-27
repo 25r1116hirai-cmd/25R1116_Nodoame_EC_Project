@@ -39,7 +39,6 @@ def login():
 ## 更新ボタンを押すと発送済みは下に、未発送は上に並び替えるロジック追加
 # 注文管理画面
 @admin.route("/orders")
-# @login_required
 def order():
     if current_user.role != 1:
         flash("管理者専用ページです", "danger")
@@ -47,40 +46,14 @@ def order():
 
     sort = request.args.get("sort")
 
-    # DBから注文ヘッダを取得
+    # DBから注文ヘッダを取得（降順）
     orders = OrderH.query.order_by(OrderH.orderDate.desc()).all()
-    print(orders)
-    # 明細をセット
-    display_orders = []
-    for o in orders:
-        items = [
-            {
-                "itemName": d.item.itemName,  # ItemM とリレーションがある場合
-                "amount": d.amount,
-                "price": d.price,
-                "tax": d.tax
-            }
-            for d in o.order_details  # OrderH にリレーションを張っている場合
-        ]
-        display_orders.append({
-    "orderId": o.orderId,
-    "userName": o.userName,
-    "orderAddress": o.orderAddress,
-    "order_items": items,  # ← ここ変更！！
-    "total": o.total,
-    "shipFlg": o.shipFlg
-})
 
     # 並び替え
     if sort == "true":
-        display_orders = sorted(display_orders, key=lambda x: (x["shipFlg"], x["orderId"]))
+        orders = sorted(orders, key=lambda x: (x.shipFlg, x.orderId))
 
-    for o in orders:
-        for d in o.order_details:
-            print(d.itemId)
-
-    return render_template("admin/orders.html", orders=display_orders,test=orders)
-
+    return render_template("admin/orders.html", orders=orders)
 
 # 注文管理画面内にて発送状況を切り替えるロジック
 @admin.route("/toggle/<string:order_id>", methods=["POST"])
