@@ -28,10 +28,7 @@
 
             <p class="product-description">{{ product.desc }}</p>
 
-            {# 数量調整コンポーネントの読み込み #}
-            <div class="controls-wrapper">
-                {% include "shop/component/cart-controls.html" %}
-            </div>
+          
 
             <a href="{{ url_for('checkout.add_to_cart', item_id=product.itemId) }}" class="btn cart-btn">
                 <i class="fas fa-cart-plus"></i> カートに入れる
