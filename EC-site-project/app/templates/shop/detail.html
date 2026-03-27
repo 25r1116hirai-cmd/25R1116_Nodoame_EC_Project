@@ -18,8 +18,8 @@
 
             <h1 class="product-title">{{ product.itemName }}</h1>
 
-            <div class="product-price">¥{{ "{:,}".format(product.price) }}</div>
-
+            <div class="product-price">¥{{ "{:,}".format(product.price_with_tax()) }}円(税込)</p>
+    
             {# --- ここが赤枠の部分：商品詳細 (itemDetail) を追加 --- #}
             <div class="product-detail-text">
                 {{ product.itemDetail }}

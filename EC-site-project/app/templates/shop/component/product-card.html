@@ -14,8 +14,8 @@
             <a href="{{ url_for('shop.detail', id=item.itemId) }}">
                 {{ item.itemName }}</a>
         </h3>
-        <p class="p-price">¥{{ "{:,}".format(item.price) }}</p>
-
+        <p class="p-price">¥{{ "{:,}".format(item.price_with_tax()) }}円(税込)</p>
+        
         {% if item.stock > 0 %}
 <a href="{{ url_for('checkout.add_to_cart', item_id=item.itemId) }}" class="btn">
     カートに入れる

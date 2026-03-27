@@ -3,7 +3,7 @@
     <img src="{{ url_for('static', filename='img/' ~ item.imageName) }}" alt="{{ item.itemName }}">
     <div class="card-body">
       <p class="name">{{ item.itemName }}</p>
-      <p class="price">¥{{ "{:,}".format(item.price) }}</p>
+      <p class="p-price">¥{{ "{:,}".format(item.price_with_tax()) }}円(税込)</p>
     </div>
   </div>
 </a>
