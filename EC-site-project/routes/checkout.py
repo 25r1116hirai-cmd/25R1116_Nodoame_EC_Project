@@ -103,6 +103,7 @@ def decrease(item_id):
 
 
 # 注文確定
+# 注文確定
 @checkout.route("/complete", methods=["POST"])
 @login_required
 def complete():
@@ -116,12 +117,38 @@ def complete():
     phone = request.form.get("phone")
 
     order_id = datetime.now().strftime("%Y%m%d%H%M%S")
-    subtotal = sum(item['price'] * item['amount'] for item in cart)
-    shipping = 800 if subtotal > 0 else 0
-    tax = int(subtotal * 0.1)
-    total = subtotal + shipping + tax
 
-    # 1. ヘッダ保存
+    subtotal = 0
+    shipping = 800  # 一律送料
+    order_details_list = []
+
+    # 1. 在庫チェック + 明細作成 + 税込み計算
+    for i, item in enumerate(cart, start=1):
+        product = ItemM.query.get(item["itemId"])
+        if not product:
+            flash(f"{item['itemName']} は存在しません")
+            return redirect(url_for("checkout.index"))
+
+        if product.stock < item["amount"]:
+            flash(f"{product.itemName} の在庫が不足しています ({product.stock}個しかありません)")
+            return redirect(url_for("checkout.index"))
+
+        # 税込み単価
+        price_with_tax = int(product.price * (1 + product.taxRate))
+        line_total = price_with_tax * item["amount"]
+        subtotal += line_total
+
+        order_details_list.append({
+            "lineNo": i,
+            "itemId": product.itemId,
+            "amount": item["amount"],
+            "price": product.price,
+            "tax": int(product.price * item["amount"] * 0.1)
+        })
+
+    total = subtotal + shipping
+
+    # 2. ヘッダ保存
     order_h = OrderH(
         orderId=order_id,
         orderDate=datetime.now().strftime("%Y-%m-%d"),
@@ -129,54 +156,43 @@ def complete():
         orderAddress=orderAddress,
         phone=phone,
         shipFlg=False,
-        price=subtotal,
-        tax=tax,
+        price=subtotal,      # 小計(税込み)
+        tax=int(subtotal*0.1), # 簡易的に10%税として計算
         shipping=shipping,
         total=total
     )
     db.session.add(order_h)
 
-    # 2. 明細保存 ＋ 在庫減算
-    for i, item in enumerate(cart, start=1):
-        # getメソッドで確実にDBから取得
-        product = ItemM.query.get(item["itemId"])
-        
-        if product:
-            print(f"DEBUG: 商品ID {product.itemId} の在庫を減らします: {product.stock} -> {product.stock - item['amount']}") # ターミナルで確認用
-            
-            # ✅ 在庫を直接計算して代入
-            product.stock = product.stock - item["amount"]
-            
-            # 在庫がマイナスにならないように
-            if product.stock < 0:
-                product.stock = 0
-            
-            # 変更をセッションに明示的に登録
-            db.session.add(product)
+    # 3. 明細保存 + 在庫減算
+    for d in order_details_list:
+        product = ItemM.query.get(d["itemId"])
+        # 在庫減算
+        product.stock -= d["amount"]
+        db.session.add(product)
 
         order_d = OrderD(
             orderId=order_id,
-            lineNo=i,
-            itemId=item["itemId"],
-            amount=item["amount"],
-            price=item["price"],
-            tax=int(item["price"] * item["amount"] * 0.1)
+            lineNo=d["lineNo"],
+            itemId=d["itemId"],
+            amount=d["amount"],
+            price=d["price"],
+            tax=d["tax"]
         )
         db.session.add(order_d)
 
-    # 3. 確定（ここが一番重要！）
+    # 4. 確定
     try:
         db.session.commit()
-        print("DEBUG: データベースへの書き込みに成功しました")
         session.pop("cart", None)
         flash("注文完了！在庫を更新しました。")
+        print(f"DEBUG: 注文 {order_id} を確定、合計 {total}円")
     except Exception as e:
         db.session.rollback()
-        print(f"DEBUG ERROR: 書き込み失敗: {e}")
         flash("エラーが発生しました。")
+        print(f"DEBUG ERROR: {e}")
+        return redirect(url_for("checkout.index"))
 
     return render_template("checkout/complete.html", order_id=order_id, total=total)
-
 
 
 
