@@ -1,6 +1,8 @@
 from app.extensions import db
 from sqlalchemy import func
 
+from sqlalchemy.ext.hybrid import hybrid_property
+
 class OrderD(db.Model):
     __tablename__ = "orderD"
     orderId = db.Column(db.String(10), db.ForeignKey('orderH.orderId',name='fk_orderD_orderH'), primary_key=True)    # 発注ID 複合キー
@@ -30,3 +32,7 @@ class OrderD(db.Model):
     #         "updDate": self.updDate.strftime('%Y/%m/%d %H:%M:%S') if self.updDate else None,
     #         "insDate": self.insDate.strftime('%Y/%m/%d %H:%M:%S') if self.insDate else None
     #     }
+    @hybrid_property
+    def total_with_tax(self):
+        """1明細ごとの税込み合計（単価 * 数量 * 税）"""
+        return int(self.price * (1 + self.tax) * self.amount)

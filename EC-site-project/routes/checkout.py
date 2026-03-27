@@ -176,3 +176,20 @@ def complete():
         flash("エラーが発生しました。")
 
     return render_template("checkout/complete.html", order_id=order_id, total=total)
+
+
+
+
+@checkout.route("/payment", methods=["GET", "POST"])
+@login_required
+def payment():
+    cart = session.get("cart", [])
+    if not cart:
+        flash("カートに商品がありません")
+        return redirect(url_for("checkout.index"))
+
+    if request.method == "POST":
+        # フォームからPOSTされたらcompleteにリダイレクト
+        return redirect(url_for("checkout.complete"))
+
+    return render_template("checkout/payment.html", cart_items=cart)
