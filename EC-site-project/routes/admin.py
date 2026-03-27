@@ -26,7 +26,7 @@ def login():
             login_user(user)
             return redirect(url_for("admin.order"))  # 管理画面へ
 
-        # flash("ログイン失敗", "danger")
+        flash("ログイン失敗", "danger")
 
     return render_template("admin/login.html")
 
@@ -42,7 +42,7 @@ def login():
 # @login_required
 def order():
     if current_user.role != 1:
-        # flash("管理者専用ページです", "danger")
+        flash("管理者専用ページです", "danger")
         return redirect(url_for("shop.index"))
 
     sort = request.args.get("sort")
