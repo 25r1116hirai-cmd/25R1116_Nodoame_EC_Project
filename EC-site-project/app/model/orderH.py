@@ -1,6 +1,8 @@
 from app.extensions import db
 from sqlalchemy import func
 
+from sqlalchemy.ext.hybrid import hybrid_property
+
 class OrderH(db.Model):
     __tablename__ = "orderH"
     orderId = db.Column(db.String(10),primary_key=True)     # 発注ID 
@@ -44,3 +46,13 @@ class OrderH(db.Model):
             "details": [d.getData() for d in self.order_details]  # 子明細も含める
             
         }
+
+    @hybrid_property
+    def subtotal_with_tax(self):
+        """DB上の明細を合計した税込み小計"""
+        return sum(d.total_with_tax for d in self.order_details)
+
+    @hybrid_property
+    def total_including_shipping(self):
+        """送料込み合計"""
+        return self.subtotal_with_tax + self.shipping
